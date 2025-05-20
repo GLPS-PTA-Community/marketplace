@@ -46,8 +46,6 @@
       border-radius: 8px;
       cursor: pointer;
     }
-
-    /* Lightbox styles */
     #lightbox {
       position: fixed;
       top: 0;
@@ -82,7 +80,6 @@
     <p>Loading listings...</p>
   </div>
 
-  <!-- Lightbox modal -->
   <div id="lightbox" onclick="this.style.display='none'">
     <img id="lightbox-img" src="" alt="Enlarged preview" />
   </div>
@@ -92,13 +89,13 @@
 
     function extractDriveId(link) {
       if (!link) return null;
-      let idMatch = link.match(/[-\w]{25,}/);
-      return idMatch ? idMatch[0] : null;
+      const match = link.match(/[-\w]{25,}/);
+      return match ? match[0] : null;
     }
 
     function buildImageUrl(driveLink) {
       const fileId = extractDriveId(driveLink);
-      return fileId ? `https://drive.google.com/uc?export=view&id=${fileId}` : null;
+      return fileId ? `https://drive.google.com/uc?export=download&id=${fileId}` : null;
     }
 
     async function loadListings() {
@@ -131,14 +128,12 @@
 
           filtered.forEach(item => {
             const imageUrl = buildImageUrl(item["Upload Item Photo (Optional)"]);
-
-            const div = document.createElement("div");
-            div.className = "listing";
-
-            let imageHtml = imageUrl
+            const imageHtml = imageUrl
               ? `<img class="thumbnail" src="${imageUrl}" alt="Item image" onclick="showLightbox('${imageUrl}')"/>`
               : `<span style="color:#888;">No Image</span>`;
 
+            const div = document.createElement("div");
+            div.className = "listing";
             div.innerHTML = `
               <div>${imageHtml}</div>
               <div class="listing-details">
