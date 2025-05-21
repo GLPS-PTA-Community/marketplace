@@ -46,6 +46,8 @@
       border-radius: 8px;
       cursor: pointer;
     }
+
+    /* Lightbox styles */
     #lightbox {
       position: fixed;
       top: 0;
@@ -67,6 +69,12 @@
   </style>
 </head>
 <body>
+  <div style="text-align:center; margin-bottom: 20px;">
+    <img src="https://raw.githubusercontent.com/GLPS-PTA-Community/marketplace/main/images/Possible%20PTA%20Logo.jpg" 
+         alt="PTA Logo" 
+         style="max-height: 100px; border-radius: 8px;" />
+  </div>
+
   <h1>PTA Community Marketplace</h1>
 
   <div class="controls">
@@ -80,6 +88,7 @@
     <p>Loading listings...</p>
   </div>
 
+  <!-- Lightbox modal -->
   <div id="lightbox" onclick="this.style.display='none'">
     <img id="lightbox-img" src="" alt="Enlarged preview" />
   </div>
@@ -87,15 +96,8 @@
   <script>
     const endpoint = "https://script.google.com/macros/s/AKfycby3uB_X3yr3sKGrugo8KTh9_FQezJN28wRhU1lmKYZBY5jj43EOXazsQ_LWrbtEUYPb/exec";
 
-    function extractDriveId(link) {
-      if (!link) return null;
-      const match = link.match(/[-\w]{25,}/);
-      return match ? match[0] : null;
-    }
-
-    function buildImageUrl(driveLink) {
-      const fileId = extractDriveId(driveLink);
-      return fileId ? `https://drive.google.com/uc?export=download&id=${fileId}` : null;
+    function buildImageUrl(filename) {
+      return filename ? `https://raw.githubusercontent.com/GLPS-PTA-Community/marketplace/main/images/${encodeURIComponent(filename)}` : null;
     }
 
     async function loadListings() {
@@ -127,13 +129,15 @@
           container.innerHTML = "";
 
           filtered.forEach(item => {
-            const imageUrl = buildImageUrl(item["Upload Item Photo (Optional)"]);
-            const imageHtml = imageUrl
-              ? `<img class="thumbnail" src="${imageUrl}" alt="Item image" onclick="showLightbox('${imageUrl}')"/>`
-              : `<span style="color:#888;">No Image</span>`;
+            const imageUrl = buildImageUrl(item["Image Filename"]);
 
             const div = document.createElement("div");
             div.className = "listing";
+
+            let imageHtml = imageUrl
+              ? `<img class="thumbnail" src="${imageUrl}" alt="Item image" onclick="showLightbox('${imageUrl}')"/>`
+              : `<span style="color:#888;">No Image</span>`;
+
             div.innerHTML = `
               <div>${imageHtml}</div>
               <div class="listing-details">
