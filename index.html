@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>PTA Community Marketplace</title>
   <style>
     body {
@@ -69,12 +69,6 @@
   </style>
 </head>
 <body>
-  <div style="text-align:center; margin-bottom: 20px;">
-    <img src="https://raw.githubusercontent.com/GLPS-PTA-Community/marketplace/main/images/Possible%20PTA%20Logo.jpg" 
-         alt="PTA Logo" 
-         style="max-height: 100px; border-radius: 8px;" />
-  </div>
-
   <h1>PTA Community Marketplace</h1>
 
   <div class="controls">
@@ -95,10 +89,6 @@
 
   <script>
     const endpoint = "https://script.google.com/macros/s/AKfycby3uB_X3yr3sKGrugo8KTh9_FQezJN28wRhU1lmKYZBY5jj43EOXazsQ_LWrbtEUYPb/exec";
-
-    function buildImageUrl(filename) {
-      return filename ? `https://raw.githubusercontent.com/GLPS-PTA-Community/marketplace/main/images/${encodeURIComponent(filename)}` : null;
-    }
 
     async function loadListings() {
       try {
@@ -129,7 +119,7 @@
           container.innerHTML = "";
 
           filtered.forEach(item => {
-            const imageUrl = buildImageUrl(item["Image Filename"]);
+            const imageUrl = item["GitHub Image URL"]?.trim();
 
             const div = document.createElement("div");
             div.className = "listing";
