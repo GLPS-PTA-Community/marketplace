@@ -89,7 +89,6 @@
 
   <script>
     const endpoint = "https://script.google.com/macros/s/AKfycby3uB_X3yr3sKGrugo8KTh9_FQezJN28wRhU1lmKYZBY5jj43EOXazsQ_LWrbtEUYPb/exec";
-    const baseImageUrl = "https://raw.githubusercontent.com/GLPS-PTA-Community/marketplace/main/images/";
 
     async function loadListings() {
       try {
@@ -120,8 +119,10 @@
           container.innerHTML = "";
 
           filtered.forEach(item => {
-            const filename = item["Image Filename"]?.trim();
-            const imageUrl = filename ? baseImageUrl + filename : "";
+            const imageFilename = item["Image Filename"]?.trim();
+            const imageUrl = imageFilename
+              ? `https://raw.githubusercontent.com/GLPS-PTA-Community/marketplace/main/images/${encodeURIComponent(imageFilename)}`
+              : null;
 
             const div = document.createElement("div");
             div.className = "listing";
