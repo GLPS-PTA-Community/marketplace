@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>PTA Community Marketplace</title>
   <style>
     body {
@@ -30,6 +30,11 @@
       margin: 20px auto;
       padding: 20px;
       max-width: 600px;
+      display: flex;
+      gap: 15px;
+    }
+    .item-details {
+      flex: 1;
     }
     .item-title {
       font-size: 1.5em;
@@ -51,6 +56,32 @@
     .contact-button:hover {
       background-color: #45a049;
     }
+    .thumbnail {
+      width: 120px;
+      height: 90px;
+      object-fit: cover;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    /* Lightbox styles */
+    #lightbox {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.8);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+    #lightbox img {
+      max-width: 90%;
+      max-height: 80%;
+      border-radius: 10px;
+      box-shadow: 0 0 15px #000;
+    }
   </style>
 </head>
 <body>
@@ -64,6 +95,12 @@
   <div id="listings">
     <p>Loading listings...</p>
   </div>
+
+  <!-- Lightbox modal -->
+  <div id="lightbox" onclick="this.style.display='none'">
+    <img id="lightbox-img" src="" alt="Enlarged preview" />
+  </div>
+
   <script>
     const endpoint = "https://script.google.com/macros/s/AKfycby3uB_X3yr3sKGrugo8KTh9_FQezJN28wRhU1lmKYZBY5jj43EOXazsQ_LWrbtEUYPb/exec";
 
@@ -100,14 +137,27 @@
             const email = encodeURIComponent(item["Email address"] || "");
             const contactFormUrl = `https://docs.google.com/forms/d/e/1FAIpQLSd85mhv1hfjrSu4ZmhQi6TZe4kmfVFhAtxrV14vU3Uk-Wkheg/viewform?usp=pp_url&entry.1811975642=${itemName}&entry.706306961=${email}&entry.1728741513=I%20am%20interested%20in%20your%20item.%20Is%20it%20still%20available%3F`;
 
+            const imageFilename = item["Image Filename"]?.trim();
+            const imageUrl = imageFilename
+              ? `https://raw.githubusercontent.com/GLPS-PTA-Community/marketplace/main/images/${encodeURIComponent(imageFilename)}`
+              : null;
+
             const div = document.createElement("div");
             div.className = "item-card";
+
+            const imageHtml = imageUrl
+              ? `<img class="thumbnail" src="${imageUrl}" alt="Item image" onclick="showLightbox('${imageUrl}')"/>`
+              : `<div style="width:120px;height:90px;background:#ddd;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#666;">No Image</div>`;
+
             div.innerHTML = `
-              <div class="item-title">${item["Item Name"]}</div>
-              <div class="item-description">${item["Item Description"]}</div>
-              <p><strong>Category:</strong> ${item["Category"]}</p>
-              <p><strong>Condition:</strong> ${item["Condition"]}</p>
-              <a href="${contactFormUrl}" class="contact-button" target="_blank">Contact Seller</a>
+              ${imageHtml}
+              <div class="item-details">
+                <div class="item-title">${item["Item Name"]}</div>
+                <div class="item-description">${item["Item Description"]}</div>
+                <p><strong>Category:</strong> ${item["Category"]}</p>
+                <p><strong>Condition:</strong> ${item["Condition"]}</p>
+                <a href="${contactFormUrl}" class="contact-button" target="_blank">Contact Seller</a>
+              </div>
             `;
             container.appendChild(div);
           });
@@ -121,6 +171,13 @@
         console.error("Error loading data:", err);
         document.getElementById("listings").innerHTML = `<p>Failed to load listings.</p>`;
       }
+    }
+
+    function showLightbox(imgUrl) {
+      const lightbox = document.getElementById("lightbox");
+      const lightboxImg = document.getElementById("lightbox-img");
+      lightboxImg.src = imgUrl;
+      lightbox.style.display = "flex";
     }
 
     loadListings();
