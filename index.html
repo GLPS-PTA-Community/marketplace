@@ -135,7 +135,9 @@
           filtered.forEach(item => {
             const itemName = encodeURIComponent(item["Item Name"] || "");
             const defaultMessage = encodeURIComponent("Hi, I'm interested in this item. Is it still available please?");
-            const contactFormUrl = `https://docs.google.com/forms/d/e/1FAIpQLSd85mhv1hfjrSu4ZmhQi6TZe4kmfVFhAtxrV14vU3Uk-Wkheg/viewform?usp=pp_url&entry.1811975642=${itemName}&entry.1513359632=${defaultMessage}`;
+            const itemId = encodeURIComponent(item["Item ID"] || "");
+            const contactFormUrl = `https://docs.google.com/forms/d/e/1FAIpQLSd85mhv1hfjrSu4ZmhQi6TZe4kmfVFhAtxrV14vU3Uk-Wkheg/viewform?usp=pp_url&entry.1181883131=${itemId}&entry.1811975642=${itemName}&entry.1513359632=${defaultMessage}`;
+
 
             const imageFilename = item["Image Filename"]?.trim();
             const imageUrl = imageFilename
