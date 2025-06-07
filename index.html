@@ -39,6 +39,9 @@
     .item-title {
       font-size: 1.5em;
       margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
     }
     .item-description {
       margin-bottom: 15px;
@@ -81,6 +84,15 @@
       max-height: 80%;
       border-radius: 10px;
       box-shadow: 0 0 15px #000;
+    }
+    /* Expiring Soon badge */
+    .badge.expiring-soon {
+      background-color: #ff9800;
+      color: white;
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-weight: bold;
+      font-size: 0.9em;
     }
   </style>
 </head>
@@ -133,11 +145,23 @@
           container.innerHTML = "";
 
           filtered.forEach(item => {
+            // Calculate days until expiry
+            let badgeHTML = "";
+            if (item["Expiry Date"]) {
+              const today = new Date();
+              const expiryDate = new Date(item["Expiry Date"]);
+              const diffDays = Math.floor((expiryDate - today) / (1000 * 60 * 60 * 24));
+              const status = (item["Status"] || "").toLowerCase();
+
+              if (diffDays <= 7 && diffDays > 0 && status !== "expired" && status !== "sold") {
+                badgeHTML = `<span class="badge expiring-soon">Expiring Soon</span>`;
+              }
+            }
+
             const itemName = encodeURIComponent(item["Item Name"] || "");
             const defaultMessage = encodeURIComponent("Hi, I'm interested in this item. Is it still available please?");
             const itemId = encodeURIComponent(item["Item ID"] || "");
             const contactFormUrl = `https://docs.google.com/forms/d/e/1FAIpQLSd85mhv1hfjrSu4ZmhQi6TZe4kmfVFhAtxrV14vU3Uk-Wkheg/viewform?usp=pp_url&entry.1181883131=${itemId}&entry.1811975642=${itemName}&entry.1513359632=${defaultMessage}`;
-
 
             const imageFilename = item["Image Filename"]?.trim();
             const imageUrl = imageFilename
@@ -154,7 +178,7 @@
             div.innerHTML = `
               ${imageHtml}
               <div class="item-details">
-                <div class="item-title">${item["Item Name"]}</div>
+                <div class="item-title">${item["Item Name"]} ${badgeHTML}</div>
                 <div class="item-description">${item["Item Description"]}</div>
                 <p><strong>Category:</strong> ${item["Category"]}</p>
                 <p><strong>Condition:</strong> ${item["Condition"]}</p>
@@ -185,14 +209,13 @@
     loadListings();
   </script>
   <div style="margin-top: 40px; text-align: center; font-size: 14px; color: #666;">
-  <p>
-    <strong>Disclaimer:</strong> The PTA Community Marketplace only facilitates the initial contact between buyers and sellers. All further communication and transactions are the responsibility of the participants. The PTA is not liable for any outcomes resulting from these interactions.
-  </p>
-  <p>
-    If you have any questions, please <a href="mailto:PTA@greatlinfordprimaryschool.co.uk">contact us at PTA@greatlinfordprimaryschool.co.uk</a>.
-  </p>
-</div>
+    <p>
+      <strong>Disclaimer:</strong> The PTA Community Marketplace only facilitates the initial contact between buyers and sellers. All further communication and transactions are the responsibility of the participants. The PTA is not liable for any outcomes resulting from these interactions.
+    </p>
+    <p>
+      If you have any questions, please <a href="mailto:PTA@greatlinfordprimaryschool.co.uk">contact us at PTA@greatlinfordprimaryschool.co.uk</a>.
+    </p>
+  </div>
 
-</div>
 </body>
 </html>
