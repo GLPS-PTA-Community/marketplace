@@ -12,6 +12,15 @@
       padding: 20px;
     }
 
+    .content-wrapper {
+      background: white;
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 20px;
+      border-radius: 20px;
+      box-shadow: 0 0 12px rgba(0, 0, 0, 0.1);
+    }
+
     @keyframes fadeSlideUp {
       0% { opacity: 0; transform: translateY(20px); }
       100% { opacity: 1; transform: translateY(0); }
@@ -32,9 +41,6 @@
       margin-bottom: 30px;
       animation: fadeSlideUp 0.8s ease-out forwards;
       box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-      max-width: 900px;
-      margin-left: auto;
-      margin-right: auto;
     }
 
     .header-box h1 {
@@ -48,11 +54,6 @@
       animation: pulse 3s infinite;
     }
 
-    .main-container {
-      max-width: 900px;
-      margin: 0 auto;
-    }
-
     .controls {
       text-align: center;
       margin-bottom: 20px;
@@ -64,7 +65,7 @@
       margin: 5px;
     }
 
-    .item-card {
+    .item-card, .skeleton-card {
       background-color: #fff;
       border-radius: 10px;
       box-shadow: 0 4px 6px rgba(0,0,0,0.1);
@@ -73,7 +74,26 @@
       max-width: 600px;
       display: flex;
       gap: 15px;
-      animation: fadeSlideUp 0.5s ease-out forwards;
+    }
+
+    .skeleton-card {
+      animation: pulse 1.5s infinite;
+    }
+
+    .skeleton-thumbnail, .skeleton-line {
+      background: #ddd;
+      border-radius: 6px;
+    }
+
+    .skeleton-thumbnail {
+      width: 120px;
+      height: 90px;
+    }
+
+    .skeleton-line {
+      height: 12px;
+      margin-bottom: 10px;
+      width: 100%;
     }
 
     .item-details {
@@ -147,14 +167,12 @@
   </style>
 </head>
 <body>
+  <div class="content-wrapper">
+    <div class="header-box">
+      <!-- <img src="logo.png" alt="PTA Logo" /> -->
+      <h1>PTA Community Marketplace</h1>
+    </div>
 
-  <div class="header-box">
-    <!-- Optional Logo -->
-    <!-- <img src="logo.png" alt="PTA Logo" /> -->
-    <h1>PTA Community Marketplace</h1>
-  </div>
-
-  <div class="main-container">
     <div class="controls">
       <input type="text" id="searchInput" placeholder="Search by item name...">
       <select id="categoryFilter">
@@ -167,13 +185,37 @@
     </div>
 
     <div id="listings">
-      <p>Loading listings...</p>
+      <!-- Skeleton loader -->
+      <div class="skeleton-card">
+        <div class="skeleton-thumbnail"></div>
+        <div class="item-details">
+          <div class="skeleton-line" style="width: 70%;"></div>
+          <div class="skeleton-line" style="width: 90%;"></div>
+          <div class="skeleton-line" style="width: 40%;"></div>
+        </div>
+      </div>
+      <div class="skeleton-card">
+        <div class="skeleton-thumbnail"></div>
+        <div class="item-details">
+          <div class="skeleton-line" style="width: 60%;"></div>
+          <div class="skeleton-line" style="width: 80%;"></div>
+          <div class="skeleton-line" style="width: 50%;"></div>
+        </div>
+      </div>
     </div>
-  </div>
 
-  <!-- Lightbox -->
-  <div id="lightbox" onclick="this.style.display='none'">
-    <img id="lightbox-img" src="" alt="Enlarged preview" />
+    <div id="lightbox" onclick="this.style.display='none'">
+      <img id="lightbox-img" src="" alt="Enlarged preview" />
+    </div>
+
+    <div style="margin-top: 40px; text-align: center; font-size: 14px; color: #666;">
+      <p>
+        <strong>Disclaimer:</strong> The PTA Community Marketplace only facilitates the initial contact between buyers and sellers. All further communication and transactions are the responsibility of the participants. The PTA is not liable for any outcomes resulting from these interactions.
+      </p>
+      <p>
+        If you have any questions, please <a href="mailto:PTA@greatlinfordprimaryschool.co.uk">contact us at PTA@greatlinfordprimaryschool.co.uk</a>.
+      </p>
+    </div>
   </div>
 
   <script>
@@ -278,15 +320,5 @@
 
     loadListings();
   </script>
-
-  <div style="margin-top: 40px; text-align: center; font-size: 14px; color: #666;">
-    <p>
-      <strong>Disclaimer:</strong> The PTA Community Marketplace only facilitates the initial contact between buyers and sellers. All further communication and transactions are the responsibility of the participants. The PTA is not liable for any outcomes resulting from these interactions.
-    </p>
-    <p>
-      If you have any questions, please <a href="mailto:PTA@greatlinfordprimaryschool.co.uk">contact us at PTA@greatlinfordprimaryschool.co.uk</a>.
-    </p>
-  </div>
-
 </body>
 </html>
