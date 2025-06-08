@@ -6,68 +6,52 @@
   <title>PTA Community Marketplace</title>
   <style>
     body {
-      font-family: 'Segoe UI', sans-serif;
-      background-color: #ffffff; /* Base background */
+      font-family: Arial, sans-serif;
+      background-color: #fdfbee;
       margin: 0;
       padding: 0;
       color: #333;
     }
 
-    .container {
-      background-color: #fdfbee;
-      max-width: 900px;
-      margin: 30px auto;
-      padding: 20px;
-      border-radius: 20px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.05);
-    }
-
-    @keyframes fadeSlideUp {
-      0% { opacity: 0; transform: translateY(20px); }
-      100% { opacity: 1; transform: translateY(0); }
-    }
-
-    @keyframes pulse {
-      0% { transform: scale(1); }
-      50% { transform: scale(1.05); }
-      100% { transform: scale(1); }
-    }
-
-    .header-box {
+    header {
       background-color: #8cbb3b;
-      color: white;
-      padding: 20px 30px;
-      border-radius: 20px;
+      padding: 20px;
       text-align: center;
-      margin-bottom: 30px;
-      animation: fadeSlideUp 0.8s ease-out forwards;
-      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+      border-radius: 0 0 25px 25px;
+      animation: slideIn 1s ease-out;
+      color: white;
     }
 
-    .header-box h1 {
+    @keyframes slideIn {
+      from {
+        transform: translateY(-100%);
+        opacity: 0;
+      }
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
+
+    h1 {
       margin: 0;
       font-size: 2em;
     }
 
-    .header-box img {
-      height: 50px;
-      margin-bottom: 10px;
-      animation: pulse 3s infinite;
-    }
-
     .controls {
       text-align: center;
-      margin-bottom: 20px;
+      padding: 20px;
     }
 
     input, select {
       padding: 10px;
       font-size: 16px;
       margin: 5px;
+      max-width: 300px;
     }
 
     .item-card {
-      background-color: #ffffff;
+      background-color: #fff;
       border-radius: 10px;
       box-shadow: 0 4px 6px rgba(0,0,0,0.1);
       margin: 20px auto;
@@ -75,11 +59,12 @@
       max-width: 600px;
       display: flex;
       gap: 15px;
-      animation: fadeSlideUp 0.5s ease-out forwards;
+      flex-wrap: wrap;
     }
 
     .item-details {
       flex: 1;
+      min-width: 250px;
     }
 
     .item-title {
@@ -97,7 +82,7 @@
 
     .contact-button {
       display: inline-block;
-      background-color: #4CAF50;
+      background-color: #8cbb3b;
       color: white;
       padding: 10px 20px;
       text-decoration: none;
@@ -106,7 +91,7 @@
     }
 
     .contact-button:hover {
-      background-color: #45a049;
+      background-color: #78a932;
     }
 
     .thumbnail {
@@ -114,10 +99,11 @@
       height: 90px;
       object-fit: cover;
       border-radius: 8px;
-      border: 3px solid #8cbb3b;
+      border: 2px solid #8cbb3b;
       cursor: pointer;
     }
 
+    /* Lightbox styles */
     #lightbox {
       position: fixed;
       top: 0;
@@ -147,54 +133,54 @@
       font-size: 0.9em;
     }
 
-    footer {
-      text-align: center;
-      font-size: 14px;
-      color: #666;
-      margin-top: 40px;
+    /* Mobile tweaks */
+    @media (max-width: 600px) {
+      .item-card {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .controls input, .controls select {
+        width: 90%;
+      }
+
+      .contact-button {
+        width: 100%;
+        text-align: center;
+      }
+
+      .item-details {
+        text-align: center;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="container">
-    <div class="header-box">
-      <!-- Add logo image here -->
-      <!-- <img src="YOUR_LOGO_URL_HERE" alt="PTA Logo" /> -->
-      <h1>PTA Community Marketplace</h1>
-    </div>
+  <header>
+    <h1>PTA Community Marketplace</h1>
+  </header>
 
-    <div class="controls">
-      <input type="text" id="searchInput" placeholder="Search by item name...">
-      <select id="categoryFilter">
-        <option value="">All Categories</option>
-      </select>
-      <select id="sortOrder">
-        <option value="newest">Newest First</option>
-        <option value="oldest">Oldest First</option>
-      </select>
-    </div>
+  <div class="controls">
+    <input type="text" id="searchInput" placeholder="Search by item name...">
+    <select id="categoryFilter">
+      <option value="">All Categories</option>
+    </select>
+    <select id="sortOrder">
+      <option value="newest">Sort by: Newest</option>
+      <option value="oldest">Sort by: Oldest</option>
+    </select>
+  </div>
 
-    <div id="listings">
-      <p>Loading listings...</p>
-    </div>
+  <div id="listings">
+    <p style="text-align:center;">Loading listings...</p>
+  </div>
 
-    <!-- Lightbox modal -->
-    <div id="lightbox" onclick="this.style.display='none'">
-      <img id="lightbox-img" src="" alt="Enlarged preview" />
-    </div>
-
-    <footer>
-      <p>
-        <strong>Disclaimer:</strong> The PTA Community Marketplace only facilitates the initial contact between buyers and sellers. All further communication and transactions are the responsibility of the participants. The PTA is not liable for any outcomes resulting from these interactions.
-      </p>
-      <p>
-        If you have any questions, please <a href="mailto:PTA@greatlinfordprimaryschool.co.uk">contact us at PTA@greatlinfordprimaryschool.co.uk</a>.
-      </p>
-    </footer>
+  <div id="lightbox" onclick="this.style.display='none'">
+    <img id="lightbox-img" src="" alt="Enlarged preview" />
   </div>
 
   <script>
-    const endpoint = "https://script.google.com/macros/s/YOUR-ENDPOINT-HERE/exec";
+    const endpoint = "https://script.google.com/macros/s/YOUR_SCRIPT_ID_HERE/exec";
 
     async function loadListings() {
       try {
@@ -216,16 +202,16 @@
           const selectedCategory = categoryDropdown.value;
           const sortOrder = sortDropdown.value;
 
-          let filtered = listings.filter(item => {
+          const filtered = listings.filter(item => {
             const matchesSearch = item["Item Name"].toLowerCase().includes(searchValue);
             const matchesCategory = !selectedCategory || item["Category"] === selectedCategory;
             return matchesSearch && matchesCategory;
           });
 
           filtered.sort((a, b) => {
-            const dateA = new Date(a.Timestamp);
-            const dateB = new Date(b.Timestamp);
-            return sortOrder === "oldest" ? dateA - dateB : dateB - dateA;
+            const aDate = new Date(a["Timestamp"]);
+            const bDate = new Date(b["Timestamp"]);
+            return sortOrder === "oldest" ? aDate - bDate : bDate - aDate;
           });
 
           container.innerHTML = "";
@@ -245,7 +231,7 @@
             const itemName = encodeURIComponent(item["Item Name"] || "");
             const defaultMessage = encodeURIComponent("Hi, I'm interested in this item. Is it still available please?");
             const itemId = encodeURIComponent(item["Item ID"] || "");
-            const contactFormUrl = `https://docs.google.com/forms/d/e/1FAIpQLSd85mhv1hfjrSu4ZmhQi6TZe4kmfVFhAtxrV14vU3Uk-Wkheg/viewform?usp=pp_url&entry.1181883131=${itemId}&entry.1811975642=${itemName}&entry.1513359632=${defaultMessage}`;
+            const contactFormUrl = `https://docs.google.com/forms/d/e/YOUR_FORM_ID/viewform?usp=pp_url&entry.1181883131=${itemId}&entry.1811975642=${itemName}&entry.1513359632=${defaultMessage}`;
 
             const imageFilename = item["Image Filename"]?.trim();
             const imageUrl = imageFilename
@@ -266,6 +252,7 @@
                 <div class="item-description">${item["Item Description"]}</div>
                 <p><strong>Category:</strong> ${item["Category"]}</p>
                 <p><strong>Condition:</strong> ${item["Condition"]}</p>
+                ${item["Age/Size"] ? `<p><strong>Size/Age:</strong> ${item["Age/Size"]}</p>` : ""}
                 <a href="${contactFormUrl}" class="contact-button" target="_blank">Contact Seller</a>
               </div>
             `;
@@ -293,5 +280,10 @@
 
     loadListings();
   </script>
+
+  <footer style="margin: 40px auto; text-align: center; font-size: 14px; color: #666; max-width: 600px;">
+    <p><strong>Disclaimer:</strong> The PTA Community Marketplace only facilitates the initial contact between buyers and sellers. All further communication and transactions are the responsibility of the participants. The PTA is not liable for any outcomes resulting from these interactions.</p>
+    <p>If you have any questions, please <a href="mailto:PTA@greatlinfordprimaryschool.co.uk">contact us at PTA@greatlinfordprimaryschool.co.uk</a>.</p>
+  </footer>
 </body>
 </html>
