@@ -5,22 +5,35 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>PTA Community Marketplace</title>
   <style>
-    body {
-      font-family: 'Segoe UI', sans-serif;
+    /* Background wrapper to contain main content and apply background */
+    .background-wrapper {
       background-color: #fdfbee;
-      margin: 0;
-      padding: 0;
+      padding: 20px;
+      min-height: 100vh;
+      box-sizing: border-box;
     }
 
-    .wrapper {
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      /* Remove background here since it's on wrapper now */
+    }
+
+    .main-wrapper {
       max-width: 1000px;
       margin: 0 auto;
-      padding: 20px;
+      /* padding removed from body and now on wrapper */
     }
 
     @keyframes fadeSlideUp {
-      0% { opacity: 0; transform: translateY(20px); }
-      100% { opacity: 1; transform: translateY(0); }
+      0% {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
 
     @keyframes pulse {
@@ -40,6 +53,12 @@
       box-shadow: 0 4px 10px rgba(0,0,0,0.15);
     }
 
+    .header-box img {
+      height: 60px;
+      margin-bottom: 10px;
+      animation: pulse 3s infinite;
+    }
+
     .header-box h1 {
       margin: 0;
       font-size: 2em;
@@ -51,32 +70,33 @@
     }
 
     .add-button a {
-      background-color: #4CAF50;
+      background-color: #f57c00;
       color: white;
-      padding: 12px 20px;
+      padding: 12px 25px;
       text-decoration: none;
-      border-radius: 8px;
       font-weight: bold;
+      border-radius: 8px;
+      font-size: 1em;
       display: inline-block;
+      transition: background-color 0.3s ease;
     }
-
     .add-button a:hover {
-      background-color: #45a049;
+      background-color: #e06c00;
     }
 
     .controls {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-      gap: 10px;
+      text-align: center;
       margin-bottom: 20px;
     }
 
     input, select {
       padding: 10px;
       font-size: 16px;
+      margin: 5px;
       border: 1px solid #ccc;
-      border-radius: 6px;
+      border-radius: 5px;
+      min-width: 150px;
+      box-sizing: border-box;
     }
 
     .item-card, .skeleton-card {
@@ -88,6 +108,31 @@
       max-width: 600px;
       display: flex;
       gap: 15px;
+      box-sizing: border-box;
+    }
+
+    .skeleton-card {
+      animation: pulse 1.5s infinite ease-in-out;
+      background: linear-gradient(90deg, #eee 25%, #f5f5f5 50%, #eee 75%);
+      background-size: 400% 100%;
+    }
+
+    .skeleton-thumbnail {
+      width: 120px;
+      height: 90px;
+      background-color: #ccc;
+      border-radius: 8px;
+    }
+
+    .skeleton-text {
+      flex: 1;
+    }
+
+    .skeleton-line {
+      height: 14px;
+      background-color: #ccc;
+      margin-bottom: 10px;
+      border-radius: 4px;
     }
 
     .item-details {
@@ -115,6 +160,7 @@
       text-decoration: none;
       border-radius: 5px;
       font-weight: bold;
+      transition: background-color 0.3s ease;
     }
 
     .contact-button:hover {
@@ -128,12 +174,15 @@
       border-radius: 8px;
       border: 3px solid #8cbb3b;
       cursor: pointer;
+      flex-shrink: 0;
     }
 
     #lightbox {
       position: fixed;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
       background: rgba(0,0,0,0.8);
       display: none;
       align-items: center;
@@ -157,219 +206,227 @@
       font-size: 0.9em;
     }
 
-    /* Skeleton loading card */
-    .skeleton {
-      background: #eee;
-      border-radius: 4px;
-      animation: pulse 1.5s infinite;
-    }
-
-    .skeleton-thumb {
-      width: 120px;
-      height: 90px;
-      background: #ddd;
-      border-radius: 8px;
-    }
-
-    .skeleton-line {
-      height: 14px;
-      margin: 8px 0;
-      background: #ddd;
-      border-radius: 4px;
-    }
-
-    .skeleton-title { width: 60%; }
-    .skeleton-text { width: 80%; }
-
+    /* Responsive mobile optimizations */
     @media (max-width: 600px) {
+      .background-wrapper {
+        padding: 10px;
+      }
+      .main-wrapper {
+        padding: 0 5px;
+      }
+      .header-box {
+        padding: 15px 15px;
+        border-radius: 15px;
+      }
+      .header-box img {
+        height: 45px;
+        margin-bottom: 5px;
+      }
+      .header-box h1 {
+        font-size: 1.5em;
+      }
+      .add-button a {
+        padding: 8px 16px;
+        font-size: 0.9em;
+        border-radius: 6px;
+      }
+      input, select {
+        padding: 8px;
+        font-size: 14px;
+        margin: 3px 2px;
+        min-width: 100px;
+      }
       .item-card, .skeleton-card {
         flex-direction: column;
-        align-items: center;
+        max-width: 100%;
+        padding: 15px;
       }
-
-      .controls {
-        flex-direction: column;
-        align-items: center;
-      }
-
-      .add-button a {
-        width: 90%;
-      }
-
       .thumbnail {
         width: 100%;
         height: auto;
+        max-height: 180px;
+        border-width: 2px;
+        margin-bottom: 10px;
       }
-
-      .skeleton-thumb {
-        width: 100%;
-        height: 150px;
+      .item-title {
+        font-size: 1.2em;
+      }
+      .contact-button {
+        padding: 8px 15px;
+        font-size: 0.9em;
+      }
+      .badge.expiring-soon {
+        font-size: 0.8em;
+        padding: 2px 6px;
       }
     }
   </style>
 </head>
 <body>
 
-  <div class="wrapper">
-    <div class="header-box">
-      <h1>PTA Community Marketplace</h1>
-    </div>
+  <div class="background-wrapper">
+    <div class="main-wrapper">
 
-    <div class="add-button">
-      <a href="https://docs.google.com/forms/d/e/1FAIpQLSeMm3omCNgUCGx_sx6NMYikU_JO8kWU_5S9fj2G9HG8n8DUUw/viewform" target="_blank">
-        Add an Item to the Marketplace
-      </a>
-    </div>
+      <div class="header-box">
+        <img src="https://raw.githubusercontent.com/GLPS-PTA-Community/marketplace/main/images/pta-logo.png" alt="PTA Logo" />
+        <h1>PTA Community Marketplace</h1>
+      </div>
 
-    <div class="controls">
-      <input type="text" id="searchInput" placeholder="Search by item name...">
-      <select id="categoryFilter"><option value="">All Categories</option></select>
-      <select id="sortOrder">
-        <option value="newest">Sort by: Newest</option>
-        <option value="oldest">Sort by: Oldest</option>
-      </select>
-    </div>
+      <div class="add-button">
+        <a href="https://docs.google.com/forms/d/e/1FAIpQLSeMm3omCNgUCGx_sx6NMYikU_JO8kWU_5S9fj2G9HG8n8DUUw/viewform" target="_blank" rel="noopener noreferrer">
+          Add an Item to the Marketplace
+        </a>
+      </div>
 
-    <div id="listings">
-      <!-- Skeleton Cards (3 placeholders) -->
-      <div class="skeleton-card">
-        <div class="skeleton-thumb skeleton"></div>
-        <div class="item-details">
-          <div class="skeleton-line skeleton skeleton-title"></div>
-          <div class="skeleton-line skeleton skeleton-text"></div>
-          <div class="skeleton-line skeleton skeleton-text"></div>
+      <div class="controls">
+        <input type="text" id="searchInput" placeholder="Search by item name..." />
+        <select id="categoryFilter" aria-label="Filter by category">
+          <option value="">All Categories</option>
+        </select>
+        <select id="sortOrder" aria-label="Sort order">
+          <option value="newest">Sort by: Newest</option>
+          <option value="oldest">Sort by: Oldest</option>
+        </select>
+      </div>
+
+      <div id="listings">
+        <!-- Skeleton loaders -->
+        <div class="skeleton-card">
+          <div class="skeleton-thumbnail"></div>
+          <div class="skeleton-text">
+            <div class="skeleton-line" style="width: 60%;"></div>
+            <div class="skeleton-line" style="width: 80%;"></div>
+            <div class="skeleton-line" style="width: 40%;"></div>
+          </div>
+        </div>
+        <div class="skeleton-card">
+          <div class="skeleton-thumbnail"></div>
+          <div class="skeleton-text">
+            <div class="skeleton-line" style="width: 70%;"></div>
+            <div class="skeleton-line" style="width: 90%;"></div>
+            <div class="skeleton-line" style="width: 50%;"></div>
+          </div>
         </div>
       </div>
-      <div class="skeleton-card">
-        <div class="skeleton-thumb skeleton"></div>
-        <div class="item-details">
-          <div class="skeleton-line skeleton skeleton-title"></div>
-          <div class="skeleton-line skeleton skeleton-text"></div>
-          <div class="skeleton-line skeleton skeleton-text"></div>
-        </div>
-      </div>
-      <div class="skeleton-card">
-        <div class="skeleton-thumb skeleton"></div>
-        <div class="item-details">
-          <div class="skeleton-line skeleton skeleton-title"></div>
-          <div class="skeleton-line skeleton skeleton-text"></div>
-          <div class="skeleton-line skeleton skeleton-text"></div>
-        </div>
-      </div>
-    </div>
 
-    <div id="lightbox" onclick="this.style.display='none'">
-      <img id="lightbox-img" src="" alt="Large preview">
-    </div>
+      <div id="lightbox" onclick="this.style.display='none'">
+        <img id="lightbox-img" src="" alt="Enlarged preview" />
+      </div>
 
-    <div style="margin-top: 40px; text-align: center; font-size: 14px; color: #666;">
-      <p><strong>Disclaimer:</strong> The PTA Community Marketplace only facilitates the initial contact between buyers and sellers. All further communication and transactions are the responsibility of the participants. The PTA is not liable for any outcomes resulting from these interactions.</p>
-      <p>If you have any questions, please <a href="mailto:PTA@greatlinfordprimaryschool.co.uk">contact us at PTA@greatlinfordprimaryschool.co.uk</a>.</p>
+      <div style="margin-top: 40px; text-align: center; font-size: 14px; color: #666;">
+        <p>
+          <strong>Disclaimer:</strong> The PTA Community Marketplace only facilitates the initial contact between buyers and sellers. All further communication and transactions are the responsibility of the participants. The PTA is not liable for any outcomes resulting from these interactions.
+        </p>
+        <p>
+          If you have any questions, please <a href="mailto:PTA@greatlinfordprimaryschool.co.uk">contact us at PTA@greatlinfordprimaryschool.co.uk</a>.
+        </p>
+      </div>
+
     </div>
   </div>
 
-  <script>
-    const endpoint = "https://script.google.com/macros/s/AKfycby3uB_X3yr3sKGrugo8KTh9_FQezJN28wRhU1lmKYZBY5jj43EOXazsQ_LWrbtEUYPb/exec";
+<script>
+  const endpoint = "https://script.google.com/macros/s/AKfycby3uB_X3yr3sKGrugo8KTh9_FQezJN28wRhU1lmKYZBY5jj43EOXazsQ_LWrbtEUYPb/exec";
 
-    async function loadListings() {
-      try {
-        const res = await fetch(endpoint);
-        const data = await res.json();
-        const listings = data.filter(item => item["Item Name"]);
+  async function loadListings() {
+    try {
+      const res = await fetch(endpoint);
+      const data = await res.json();
+      const listings = data.filter(item => item["Item Name"]);
 
-        const container = document.getElementById("listings");
-        const categoryDropdown = document.getElementById("categoryFilter");
-        const sortOrder = document.getElementById("sortOrder");
-        const searchInput = document.getElementById("searchInput");
+      const container = document.getElementById("listings");
+      const categoryDropdown = document.getElementById("categoryFilter");
+      const sortOrder = document.getElementById("sortOrder");
+      const searchInput = document.getElementById("searchInput");
 
-        const categories = [...new Set(listings.map(i => i["Category"]).filter(Boolean))];
-        categoryDropdown.innerHTML = `<option value="">All Categories</option>` +
-          categories.map(c => `<option value="${c}">${c}</option>`).join('');
+      const categories = [...new Set(listings.map(i => i["Category"]).filter(Boolean))];
+      categoryDropdown.innerHTML = `<option value="">All Categories</option>` +
+        categories.map(c => `<option value="${c}">${c}</option>`).join('');
 
-        function renderFilteredListings() {
-          const searchValue = searchInput.value.toLowerCase();
-          const selectedCategory = categoryDropdown.value;
-          const sort = sortOrder.value;
+      function renderFilteredListings() {
+        const searchValue = searchInput.value.toLowerCase();
+        const selectedCategory = categoryDropdown.value;
+        const sort = sortOrder.value;
 
-          let filtered = listings.filter(item => {
-            const matchesSearch = item["Item Name"].toLowerCase().includes(searchValue);
-            const matchesCategory = !selectedCategory || item["Category"] === selectedCategory;
-            return matchesSearch && matchesCategory;
-          });
+        let filtered = listings.filter(item => {
+          const matchesSearch = item["Item Name"].toLowerCase().includes(searchValue);
+          const matchesCategory = !selectedCategory || item["Category"] === selectedCategory;
+          return matchesSearch && matchesCategory;
+        });
 
-          filtered.sort((a, b) => {
-            const dateA = new Date(a.Timestamp);
-            const dateB = new Date(b.Timestamp);
-            return sort === "oldest" ? dateA - dateB : dateB - dateA;
-          });
+        filtered.sort((a, b) => {
+          const dateA = new Date(a.Timestamp);
+          const dateB = new Date(b.Timestamp);
+          return sort === "oldest" ? dateA - dateB : dateB - dateA;
+        });
 
-          container.innerHTML = "";
+        container.innerHTML = "";
 
-          filtered.forEach(item => {
-            const itemName = encodeURIComponent(item["Item Name"] || "");
-            const defaultMessage = encodeURIComponent("Hi, I'm interested in this item. Is it still available please?");
-            const itemId = encodeURIComponent(item["Item ID"] || "");
-            const contactFormUrl = `https://docs.google.com/forms/d/e/1FAIpQLSd85mhv1hfjrSu4ZmhQi6TZe4kmfVFhAtxrV14vU3Uk-Wkheg/viewform?usp=pp_url&entry.1181883131=${itemId}&entry.1811975642=${itemName}&entry.1513359632=${defaultMessage}`;
+        filtered.forEach(item => {
+          let badgeHTML = "";
+          if (item["Expiry Date"]) {
+            const today = new Date();
+            const expiryDate = new Date(item["Expiry Date"]);
+            const diffDays = Math.floor((expiryDate - today) / (1000 * 60 * 60 * 24));
+            const status = (item["Status"] || "").toLowerCase();
 
-            const imageFilename = item["Image Filename"]?.trim();
-            const imageUrl = imageFilename
-              ? `https://raw.githubusercontent.com/GLPS-PTA-Community/marketplace/main/images/${encodeURIComponent(imageFilename)}`
-              : null;
-
-            let badgeHTML = "";
-            if (item["Expiry Date"]) {
-              const today = new Date();
-              const expiryDate = new Date(item["Expiry Date"]);
-              const diffDays = Math.floor((expiryDate - today) / (1000 * 60 * 60 * 24));
-              const status = (item["Status"] || "").toLowerCase();
-
-              if (diffDays <= 7 && diffDays > 0 && status !== "expired" && status !== "sold") {
-                badgeHTML = `<span class="badge expiring-soon">Expiring Soon</span>`;
-              }
+            if (diffDays <= 7 && diffDays > 0 && status !== "expired" && status !== "sold") {
+              badgeHTML = `<span class="badge expiring-soon">Expiring Soon</span>`;
             }
+          }
 
-            const div = document.createElement("div");
-            div.className = "item-card";
+          const itemName = encodeURIComponent(item["Item Name"] || "");
+          const defaultMessage = encodeURIComponent("Hi, I'm interested in this item. Is it still available please?");
+          const itemId = encodeURIComponent(item["Item ID"] || "");
+          const contactFormUrl = `https://docs.google.com/forms/d/e/1FAIpQLSd85mhv1hfjrSu4ZmhQi6TZe4kmfVFhAtxrV14vU3Uk-Wkheg/viewform?usp=pp_url&entry.1181883131=${itemId}&entry.1811975642=${itemName}&entry.1513359632=${defaultMessage}`;
 
-            const imageHtml = imageUrl
-              ? `<img class="thumbnail" src="${imageUrl}" alt="Item image" onclick="showLightbox('${imageUrl}')"/>`
-              : `<div style="width:120px;height:90px;background:#ddd;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#666;">No Image</div>`;
+          const imageFilename = item["Image Filename"]?.trim();
+          const imageUrl = imageFilename
+            ? `https://raw.githubusercontent.com/GLPS-PTA-Community/marketplace/main/images/${encodeURIComponent(imageFilename)}`
+            : null;
 
-            div.innerHTML = `
-              ${imageHtml}
-              <div class="item-details">
-                <div class="item-title">${item["Item Name"]} ${badgeHTML}</div>
-                <div class="item-description">${item["Item Description"]}</div>
-                <p><strong>Category:</strong> ${item["Category"]}</p>
-                <p><strong>Condition:</strong> ${item["Condition"]}</p>
-                ${item["Age/Size"] ? `<p><strong>Size/Age:</strong> ${item["Age/Size"]}</p>` : ""}
-                <a href="${contactFormUrl}" class="contact-button" target="_blank">Contact Seller</a>
-              </div>
-            `;
-            container.appendChild(div);
-          });
-        }
+          const div = document.createElement("div");
+          div.className = "item-card";
 
-        searchInput.addEventListener("input", renderFilteredListings);
-        categoryDropdown.addEventListener("change", renderFilteredListings);
-        sortOrder.addEventListener("change", renderFilteredListings);
+          const imageHtml = imageUrl
+            ? `<img class="thumbnail" src="${imageUrl}" alt="Item image" onclick="showLightbox('${imageUrl}')"/>`
+            : `<div style="width:120px;height:90px;background:#ddd;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#666;">No Image</div>`;
 
-        renderFilteredListings();
-      } catch (err) {
-        console.error("Error loading data:", err);
-        document.getElementById("listings").innerHTML = `<p>Failed to load listings.</p>`;
+          div.innerHTML = `
+            ${imageHtml}
+            <div class="item-details">
+              <div class="item-title">${item["Item Name"]} ${badgeHTML}</div>
+              <div class="item-description">${item["Item Description"]}</div>
+              <p><strong>Category:</strong> ${item["Category"]}</p>
+              <p><strong>Condition:</strong> ${item["Condition"]}</p>
+              ${item["Age/Size"] ? `<p><strong>Size/Age:</strong> ${item["Age/Size"]}</p>` : ""}
+              <a href="${contactFormUrl}" class="contact-button" target="_blank" rel="noopener noreferrer">Contact Seller</a>
+            </div>
+          `;
+          container.appendChild(div);
+        });
       }
-    }
 
-    function showLightbox(imgUrl) {
-      const lightbox = document.getElementById("lightbox");
-      const lightboxImg = document.getElementById("lightbox-img");
-      lightboxImg.src = imgUrl;
-      lightbox.style.display = "flex";
-    }
+      searchInput.addEventListener("input", renderFilteredListings);
+      categoryDropdown.addEventListener("change", renderFilteredListings);
+      sortOrder.addEventListener("change", renderFilteredListings);
 
-    loadListings();
-  </script>
+      renderFilteredListings();
+    } catch (err) {
+      console.error("Error loading data:", err);
+      document.getElementById("listings").innerHTML = `<p>Failed to load listings.</p>`;
+    }
+  }
+
+  function showLightbox(imgUrl) {
+    const lightbox = document.getElementById("lightbox");
+    const lightboxImg = document.getElementById("lightbox-img");
+    lightboxImg.src = imgUrl;
+    lightbox.style.display = "flex";
+  }
+
+  loadListings();
+</script>
 
 </body>
 </html>
