@@ -17,6 +17,10 @@
     .controls {
       text-align: center;
       margin-bottom: 20px;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 10px;
     }
     input, select {
       padding: 10px;
@@ -66,7 +70,6 @@
       border-radius: 8px;
       cursor: pointer;
     }
-    /* Lightbox styles */
     #lightbox {
       position: fixed;
       top: 0;
@@ -85,7 +88,6 @@
       border-radius: 10px;
       box-shadow: 0 0 15px #000;
     }
-    /* Expiring Soon badge */
     .badge.expiring-soon {
       background-color: #ff9800;
       color: white;
@@ -102,6 +104,10 @@
     <input type="text" id="searchInput" placeholder="Search by item name...">
     <select id="categoryFilter">
       <option value="">All Categories</option>
+    </select>
+    <select id="sortOrder">
+      <option value="newest">Sort: Newest First</option>
+      <option value="oldest">Sort: Oldest First</option>
     </select>
   </div>
   <div id="listings">
@@ -122,11 +128,10 @@
         const data = await res.json();
         const listings = data.filter(item => item["Item Name"]);
 
-        listings.sort((a, b) => new Date(b.Timestamp) - new Date(a.Timestamp));
-
-        const container = document.getElementById("listings");
         const categoryDropdown = document.getElementById("categoryFilter");
+        const sortDropdown = document.getElementById("sortOrder");
         const searchInput = document.getElementById("searchInput");
+        const container = document.getElementById("listings");
 
         const categories = [...new Set(listings.map(i => i["Category"]).filter(Boolean))];
         categoryDropdown.innerHTML = `<option value="">All Categories</option>` +
@@ -135,17 +140,21 @@
         function renderFilteredListings() {
           const searchValue = searchInput.value.toLowerCase();
           const selectedCategory = categoryDropdown.value;
+          const sortOrder = sortDropdown.value;
 
           const filtered = listings.filter(item => {
             const matchesSearch = item["Item Name"].toLowerCase().includes(searchValue);
             const matchesCategory = !selectedCategory || item["Category"] === selectedCategory;
             return matchesSearch && matchesCategory;
+          }).sort((a, b) => {
+            const aTime = new Date(a["Timestamp"]).getTime();
+            const bTime = new Date(b["Timestamp"]).getTime();
+            return sortOrder === "oldest" ? aTime - bTime : bTime - aTime;
           });
 
           container.innerHTML = "";
 
           filtered.forEach(item => {
-            // Calculate days until expiry
             let badgeHTML = "";
             if (item["Expiry Date"]) {
               const today = new Date();
@@ -168,6 +177,8 @@
               ? `https://raw.githubusercontent.com/GLPS-PTA-Community/marketplace/main/images/${encodeURIComponent(imageFilename)}`
               : null;
 
+            const sizeOrAge = item["Size or Age"]?.trim();
+
             const div = document.createElement("div");
             div.className = "item-card";
 
@@ -182,6 +193,7 @@
                 <div class="item-description">${item["Item Description"]}</div>
                 <p><strong>Category:</strong> ${item["Category"]}</p>
                 <p><strong>Condition:</strong> ${item["Condition"]}</p>
+                ${sizeOrAge ? `<p><strong>Size/Age:</strong> ${sizeOrAge}</p>` : ""}
                 <a href="${contactFormUrl}" class="contact-button" target="_blank">Contact Seller</a>
               </div>
             `;
@@ -191,6 +203,7 @@
 
         searchInput.addEventListener("input", renderFilteredListings);
         categoryDropdown.addEventListener("change", renderFilteredListings);
+        sortDropdown.addEventListener("change", renderFilteredListings);
 
         renderFilteredListings();
       } catch (err) {
@@ -208,6 +221,7 @@
 
     loadListings();
   </script>
+
   <div style="margin-top: 40px; text-align: center; font-size: 14px; color: #666;">
     <p>
       <strong>Disclaimer:</strong> The PTA Community Marketplace only facilitates the initial contact between buyers and sellers. All further communication and transactions are the responsibility of the participants. The PTA is not liable for any outcomes resulting from these interactions.
@@ -216,6 +230,5 @@
       If you have any questions, please <a href="mailto:PTA@greatlinfordprimaryschool.co.uk">contact us at PTA@greatlinfordprimaryschool.co.uk</a>.
     </p>
   </div>
-
 </body>
 </html>
