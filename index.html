@@ -395,18 +395,8 @@
               <p><strong>Category:</strong> ${item["Category"]}</p>
               <p><strong>Condition:</strong> ${item["Condition"]}</p>
               ${item["Age/Size"] ? `<p><strong>Size/Age:</strong> ${item["Age/Size"]}</p>` : ""}
-
-              ${(() => {
-              const validPrices = ["free", "50p", "£1", "£2", "£3", "£4", "£5", "£6", "£7", "£8", "£9", "£10"];
-              const rawPrice = (item["Price"] || "").trim().toLowerCase();
-              if (validPrices.includes(rawPrice)) {
-              const displayPrice = rawPrice === "free" ? "Free" : rawPrice.toUpperCase();
-              return `<p><strong>Price:</strong> ${displayPrice}</p>`;
-              }
-              return "";
-              })()}
-
-            <a href="${contactFormUrl}" class="contact-button" target="_blank" rel="noopener noreferrer">Contact Seller</a>
+              ${price}
+              <a href="${contactFormUrl}" class="contact-button" target="_blank" rel="noopener noreferrer">Contact Seller</a>
             </div>
           `;
           container.appendChild(div);
