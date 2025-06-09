@@ -17,24 +17,16 @@
     body {
       font-family: 'Segoe UI', sans-serif;
       margin: 0;
-      /* Remove background here since it's on wrapper now */
     }
 
     .main-wrapper {
       max-width: 1000px;
       margin: 0 auto;
-      /* padding removed from body and now on wrapper */
     }
 
     @keyframes fadeSlideUp {
-      0% {
-        opacity: 0;
-        transform: translateY(20px);
-      }
-      100% {
-        opacity: 1;
-        transform: translateY(0);
-      }
+      0% { opacity: 0; transform: translateY(20px); }
+      100% { opacity: 1; transform: translateY(0); }
     }
 
     @keyframes pulse {
@@ -81,6 +73,7 @@
       display: inline-block;
       transition: background-color 0.3s ease;
     }
+
     .add-button a:hover {
       background-color: #e06c00;
     }
@@ -291,7 +284,6 @@
       </div>
 
       <div id="listings">
-        <!-- Skeleton loaders -->
         <div class="skeleton-card">
           <div class="skeleton-thumbnail"></div>
           <div class="skeleton-text">
@@ -393,6 +385,8 @@
             ? `<img class="thumbnail" src="${imageUrl}" alt="Item image" onclick="showLightbox('${imageUrl}')"/>`
             : `<div style="width:120px;height:90px;background:#ddd;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#666;">No Image</div>`;
 
+          const price = item["Price"] ? `<p><strong>Price:</strong> ${item["Price"]}</p>` : "";
+
           div.innerHTML = `
             ${imageHtml}
             <div class="item-details">
@@ -401,6 +395,7 @@
               <p><strong>Category:</strong> ${item["Category"]}</p>
               <p><strong>Condition:</strong> ${item["Condition"]}</p>
               ${item["Age/Size"] ? `<p><strong>Size/Age:</strong> ${item["Age/Size"]}</p>` : ""}
+              ${price}
               <a href="${contactFormUrl}" class="contact-button" target="_blank" rel="noopener noreferrer">Contact Seller</a>
             </div>
           `;
