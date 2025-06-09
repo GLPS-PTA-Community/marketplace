@@ -275,7 +275,7 @@
 
       <div class="add-button">
         <a href="https://docs.google.com/forms/d/e/1FAIpQLSeMm3omCNgUCGx_sx6NMYikU_JO8kWU_5S9fj2G9HG8n8DUUw/viewform" target="_blank" rel="noopener noreferrer">
-          Add New Listing
+          Add an Item to the Marketplace
         </a>
       </div>
 
@@ -344,19 +344,6 @@
       categoryDropdown.innerHTML = `<option value="">All Categories</option>` +
         categories.map(c => `<option value="${c}">${c}</option>`).join('');
 
-      function formatPrice(price) {
-      if (!price) return "";
-      const priceStr = price.toString().toLowerCase();
-
-      if (priceStr === "free") return "Free";
-      if (priceStr === "50p") return "50p";
-      if (priceStr.startsWith("£")) return price;  // assume original price string with £
-      // If price is a numeric string or number, format as £x
-      if (!isNaN(price)) return `£${price}`;
-      return price; // fallback
-      }
-
-
       function renderFilteredListings() {
         const searchValue = searchInput.value.toLowerCase();
         const selectedCategory = categoryDropdown.value;
@@ -392,44 +379,50 @@
           const itemName = encodeURIComponent(item["Item Name"] || "");
           const defaultMessage = encodeURIComponent("Hi, I'm interested in this item. Is it still available please?");
           const itemId = encodeURIComponent(item["Item ID"] || "");
-          const contactFormUrl = `https://docs.google.com/forms/d/e/1FAIpQLSd85mhv1hfjrSu4ZmhQi6TZe4qURvw5GqK2lCh3hxShVxqfMQ/viewform?usp=pp_url&entry.352281160=${itemName}&entry.1831234093=${defaultMessage}&entry.245362964=${itemId}`;
+          const contactFormUrl = `https://docs.google.com/forms/d/e/1FAIpQLSd85mhv1hfjrSu4ZmhQi6TZe4kmfVFhAtxrV14vU3Uk-Wkheg/viewform?usp=pp_url&entry.1181883131=${itemId}&entry.1811975642=${itemName}&entry.1513359632=${defaultMessage}`;
 
-          const priceText = formatPrice(item["Price"]);
+          const imageFilename = item["Image Filename"]?.trim();
+          const imageUrl = imageFilename
+            ? `https://raw.githubusercontent.com/GLPS-PTA-Community/marketplace/main/images/${encodeURIComponent(imageFilename)}`
+            : null;
 
-          container.innerHTML += `
-            <div class="item-card" role="region" aria-label="Listing for ${item["Item Name"]}">
-              <img class="thumbnail" src="${item["Thumbnail"] || 'https://cdn-icons-png.flaticon.com/512/565/565547.png'}" alt="Thumbnail image of ${item["Item Name"]}" tabindex="0" onclick="showLightbox('${item["Thumbnail"] || 'https://cdn-icons-png.flaticon.com/512/565/565547.png'}')" onkeypress="if(event.key === 'Enter') showLightbox('${item["Thumbnail"] || 'https://cdn-icons-png.flaticon.com/512/565/565547.png'}')" />
-              <div class="item-details">
-                <div class="item-title">${item["Item Name"]} ${badgeHTML}</div>
-                <div class="item-description">${item["Description"] || ""}</div>
-                <div style="margin-bottom: 10px; font-weight: bold; font-size: 1.2em;">Price: ${priceText}</div>
-                <a href="${contactFormUrl}" target="_blank" rel="noopener noreferrer" class="contact-button" aria-label="Contact seller for ${item["Item Name"]}">Contact Seller</a>
-              </div>
+          const div = document.createElement("div");
+          div.className = "item-card";
+
+          const imageHtml = imageUrl
+            ? `<img class="thumbnail" src="${imageUrl}" alt="Item image" onclick="showLightbox('${imageUrl}')"/>`
+            : `<div style="width:120px;height:90px;background:#ddd;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#666;">No Image</div>`;
+
+          div.innerHTML = `
+            ${imageHtml}
+            <div class="item-details">
+              <div class="item-title">${item["Item Name"]} ${badgeHTML}</div>
+              <div class="item-description">${item["Item Description"]}</div>
+              <p><strong>Category:</strong> ${item["Category"]}</p>
+              <p><strong>Condition:</strong> ${item["Condition"]}</p>
+              ${item["Age/Size"] ? `<p><strong>Size/Age:</strong> ${item["Age/Size"]}</p>` : ""}
+              <a href="${contactFormUrl}" class="contact-button" target="_blank" rel="noopener noreferrer">Contact Seller</a>
             </div>
           `;
+          container.appendChild(div);
         });
-
-        if (filtered.length === 0) {
-          container.innerHTML = `<p style="text-align:center; color:#666;">No listings found matching your criteria.</p>`;
-        }
       }
 
+      searchInput.addEventListener("input", renderFilteredListings);
       categoryDropdown.addEventListener("change", renderFilteredListings);
       sortOrder.addEventListener("change", renderFilteredListings);
-      searchInput.addEventListener("input", renderFilteredListings);
 
       renderFilteredListings();
-    } catch (error) {
-      const container = document.getElementById("listings");
-      container.innerHTML = `<p style="color: red; text-align: center;">Error loading listings. Please try again later.</p>`;
-      console.error("Error fetching listings:", error);
+    } catch (err) {
+      console.error("Error loading data:", err);
+      document.getElementById("listings").innerHTML = `<p>Failed to load listings.</p>`;
     }
   }
 
-  function showLightbox(src) {
+  function showLightbox(imgUrl) {
     const lightbox = document.getElementById("lightbox");
     const lightboxImg = document.getElementById("lightbox-img");
-    lightboxImg.src = src;
+    lightboxImg.src = imgUrl;
     lightbox.style.display = "flex";
   }
 
