@@ -6,7 +6,7 @@
   <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/GLPS-PTA-Community/marketplace/main/images/pta-logo.png">
   <title>PTA Community Marketplace</title>
   <style>
-    /* Your original styles exactly */
+    /* Background wrapper to contain main content and apply background */
     .background-wrapper {
       background-color: #fdfbee;
       padding: 20px;
@@ -17,16 +17,24 @@
     body {
       font-family: 'Segoe UI', sans-serif;
       margin: 0;
+      /* Remove background here since it's on wrapper now */
     }
 
     .main-wrapper {
       max-width: 1000px;
       margin: 0 auto;
+      /* padding removed from body and now on wrapper */
     }
 
     @keyframes fadeSlideUp {
-      0% { opacity: 0; transform: translateY(20px); }
-      100% { opacity: 1; transform: translateY(0); }
+      0% {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
 
     @keyframes pulse {
@@ -73,7 +81,6 @@
       display: inline-block;
       transition: background-color 0.3s ease;
     }
-
     .add-button a:hover {
       background-color: #e06c00;
     }
@@ -284,6 +291,7 @@
       </div>
 
       <div id="listings">
+        <!-- Skeleton loaders -->
         <div class="skeleton-card">
           <div class="skeleton-thumbnail"></div>
           <div class="skeleton-text">
@@ -361,44 +369,43 @@
             const today = new Date();
             const expiryDate = new Date(item["Expiry Date"]);
             const diffDays = Math.floor((expiryDate - today) / (1000 * 60 * 60 * 24));
-            if (diffDays >= 0 && diffDays < 7) {
-              badgeHTML = `<span class="badge expiring-soon">Expires Soon</span>`;
+            const status = (item["Status"] || "").toLowerCase();
+
+            if (diffDays <= 7 && diffDays > 0 && status !== "expired" && status !== "sold") {
+              badgeHTML = `<span class="badge expiring-soon">Expiring Soon</span>`;
             }
           }
 
-          const thumbnailURL = item["Photo URL"] || "https://via.placeholder.com/120x90?text=No+Image";
-          const safeDescription = item["Description"] ? item["Description"].replace(/</g, "&lt;").replace(/>/g, "&gt;") : "";
-          // *** UPDATED PRICE DISPLAY ONLY ***
-          const priceDisplay = item["Price"] ? `£${parseFloat(item["Price"]).toFixed(2)}` : "Price N/A";
+          const itemName = encodeURIComponent(item["Item Name"] || "");
+          const defaultMessage = encodeURIComponent("Hi, I'm interested in this item. Is it still available please?");
+          const itemId = encodeURIComponent(item["Item ID"] || "");
+          const contactFormUrl = `https://docs.google.com/forms/d/e/1FAIpQLSd85mhv1hfjrSu4ZmhQi6TZe4kmfVFhAtxrV14vU3Uk-Wkheg/viewform?usp=pp_url&entry.1181883131=${itemId}&entry.1811975642=${itemName}&entry.1513359632=${defaultMessage}`;
 
-          const itemHTML = `
-            <div class="item-card">
-              <img
-                src="${thumbnailURL}"
-                alt="Photo of ${item["Item Name"]}"
-                class="thumbnail"
-                loading="lazy"
-                onclick="showLightbox('${thumbnailURL}')"
-              />
-              <div class="item-details">
-                <div class="item-title">${item["Item Name"]} ${badgeHTML}</div>
-                <div class="item-description">${safeDescription}</div>
-                <div><strong>Category:</strong> ${item["Category"] || "N/A"}</div>
-                <div><strong>Price:</strong> ${priceDisplay}</div>
-                <div><strong>Seller Contact:</strong> <a href="${item["Link to Google Form"]}" target="_blank" rel="noopener noreferrer">Contact Seller</a></div>
-                <a class="contact-button" href="${item["Link to Google Form"]}" target="_blank" rel="noopener noreferrer">
-                  Contact Seller
-                </a>
-              </div>
+          const imageFilename = item["Image Filename"]?.trim();
+          const imageUrl = imageFilename
+            ? `https://raw.githubusercontent.com/GLPS-PTA-Community/marketplace/main/images/${encodeURIComponent(imageFilename)}`
+            : null;
+
+          const div = document.createElement("div");
+          div.className = "item-card";
+
+          const imageHtml = imageUrl
+            ? `<img class="thumbnail" src="${imageUrl}" alt="Item image" onclick="showLightbox('${imageUrl}')"/>`
+            : `<div style="width:120px;height:90px;background:#ddd;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#666;">No Image</div>`;
+
+          div.innerHTML = `
+            ${imageHtml}
+            <div class="item-details">
+              <div class="item-title">${item["Item Name"]} ${badgeHTML}</div>
+              <div class="item-description">${item["Item Description"]}</div>
+              <p><strong>Category:</strong> ${item["Category"]}</p>
+              <p><strong>Condition:</strong> ${item["Condition"]}</p>
+              ${item["Age/Size"] ? `<p><strong>Size/Age:</strong> ${item["Age/Size"]}</p>` : ""}
+              <a href="${contactFormUrl}" class="contact-button" target="_blank" rel="noopener noreferrer">Contact Seller</a>
             </div>
           `;
-
-          container.insertAdjacentHTML("beforeend", itemHTML);
+          container.appendChild(div);
         });
-
-        if (filtered.length === 0) {
-          container.innerHTML = "<p style='text-align:center; font-style: italic; color: #888;'>No listings found matching your criteria.</p>";
-        }
       }
 
       searchInput.addEventListener("input", renderFilteredListings);
@@ -406,17 +413,16 @@
       sortOrder.addEventListener("change", renderFilteredListings);
 
       renderFilteredListings();
-
-    } catch (error) {
-      document.getElementById("listings").innerHTML = `<p style="text-align:center; color:red;">Failed to load listings.</p>`;
-      console.error(error);
+    } catch (err) {
+      console.error("Error loading data:", err);
+      document.getElementById("listings").innerHTML = `<p>Failed to load listings.</p>`;
     }
   }
 
-  function showLightbox(src) {
+  function showLightbox(imgUrl) {
     const lightbox = document.getElementById("lightbox");
-    const img = document.getElementById("lightbox-img");
-    img.src = src;
+    const lightboxImg = document.getElementById("lightbox-img");
+    lightboxImg.src = imgUrl;
     lightbox.style.display = "flex";
   }
 
