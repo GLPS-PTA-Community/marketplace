@@ -345,16 +345,17 @@
         categories.map(c => `<option value="${c}">${c}</option>`).join('');
 
       function formatPrice(price) {
-        // This function ensures the price is shown correctly:
-        // Acceptable inputs: "Free", "50p", "£1", "£2" ... "£10"
-        if (!price) return "";
-        if (price.toLowerCase() === "free") return "Free";
-        if (price === "50p") return "50p";
-        if (price.startsWith("£")) return price;
-        // If price is a number (e.g. 1, 2, 3) convert to £x format
-        if (!isNaN(price)) return `£${price}`;
-        return price; // fallback
+      if (!price) return "";
+      const priceStr = price.toString().toLowerCase();
+
+      if (priceStr === "free") return "Free";
+      if (priceStr === "50p") return "50p";
+      if (priceStr.startsWith("£")) return price;  // assume original price string with £
+      // If price is a numeric string or number, format as £x
+      if (!isNaN(price)) return `£${price}`;
+      return price; // fallback
       }
+
 
       function renderFilteredListings() {
         const searchValue = searchInput.value.toLowerCase();
