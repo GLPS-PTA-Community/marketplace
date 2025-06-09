@@ -6,7 +6,7 @@
   <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/GLPS-PTA-Community/marketplace/main/images/pta-logo.png">
   <title>PTA Community Marketplace</title>
   <style>
-    /* Background wrapper to contain main content and apply background */
+    /* Your original styles exactly */
     .background-wrapper {
       background-color: #fdfbee;
       padding: 20px;
@@ -281,9 +281,6 @@
           <option value="newest">Sort by: Newest</option>
           <option value="oldest">Sort by: Oldest</option>
         </select>
-        <!-- New Price Filter Inputs -->
-        <input type="number" id="minPrice" placeholder="Min Price" min="0" step="0.01" />
-        <input type="number" id="maxPrice" placeholder="Max Price" min="0" step="0.01" />
       </div>
 
       <div id="listings">
@@ -334,8 +331,6 @@
       const categoryDropdown = document.getElementById("categoryFilter");
       const sortOrder = document.getElementById("sortOrder");
       const searchInput = document.getElementById("searchInput");
-      const minPriceInput = document.getElementById("minPrice");
-      const maxPriceInput = document.getElementById("maxPrice");
 
       const categories = [...new Set(listings.map(i => i["Category"]).filter(Boolean))];
       categoryDropdown.innerHTML = `<option value="">All Categories</option>` +
@@ -345,22 +340,11 @@
         const searchValue = searchInput.value.toLowerCase();
         const selectedCategory = categoryDropdown.value;
         const sort = sortOrder.value;
-        const minPrice = parseFloat(minPriceInput.value);
-        const maxPrice = parseFloat(maxPriceInput.value);
 
         let filtered = listings.filter(item => {
           const matchesSearch = item["Item Name"].toLowerCase().includes(searchValue);
           const matchesCategory = !selectedCategory || item["Category"] === selectedCategory;
-
-          // Parse item price as float, fallback to NaN if missing or invalid
-          const price = parseFloat(item["Price"]);
-          // Price filtering logic
-          const matchesPrice = (
-            (isNaN(minPrice) || (price >= minPrice)) &&
-            (isNaN(maxPrice) || (price <= maxPrice))
-          );
-
-          return matchesSearch && matchesCategory && matchesPrice;
+          return matchesSearch && matchesCategory;
         });
 
         filtered.sort((a, b) => {
@@ -384,6 +368,7 @@
 
           const thumbnailURL = item["Photo URL"] || "https://via.placeholder.com/120x90?text=No+Image";
           const safeDescription = item["Description"] ? item["Description"].replace(/</g, "&lt;").replace(/>/g, "&gt;") : "";
+          // *** UPDATED PRICE DISPLAY ONLY ***
           const priceDisplay = item["Price"] ? `£${parseFloat(item["Price"]).toFixed(2)}` : "Price N/A";
 
           const itemHTML = `
@@ -400,8 +385,8 @@
                 <div class="item-description">${safeDescription}</div>
                 <div><strong>Category:</strong> ${item["Category"] || "N/A"}</div>
                 <div><strong>Price:</strong> ${priceDisplay}</div>
-                <div><strong>Seller Contact:</strong> <a href="mailto:${item["Email"]}">${item["Email"]}</a></div>
-                <a class="contact-button" href="mailto:${item["Email"]}?subject=Interest in ${encodeURIComponent(item["Item Name"])}">
+                <div><strong>Seller Contact:</strong> <a href="${item["Link to Google Form"]}" target="_blank" rel="noopener noreferrer">Contact Seller</a></div>
+                <a class="contact-button" href="${item["Link to Google Form"]}" target="_blank" rel="noopener noreferrer">
                   Contact Seller
                 </a>
               </div>
@@ -419,8 +404,6 @@
       searchInput.addEventListener("input", renderFilteredListings);
       categoryDropdown.addEventListener("change", renderFilteredListings);
       sortOrder.addEventListener("change", renderFilteredListings);
-      minPriceInput.addEventListener("input", renderFilteredListings);
-      maxPriceInput.addEventListener("input", renderFilteredListings);
 
       renderFilteredListings();
 
