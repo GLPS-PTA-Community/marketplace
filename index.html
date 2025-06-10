@@ -205,6 +205,127 @@
       font-size: 0.9em;
     }
 
+    /* Modal styles */
+    .modal {
+      display: none; 
+      position: fixed; 
+      z-index: 1100; 
+      left: 0;
+      top: 0;
+      width: 100%; 
+      height: 100%; 
+      overflow: auto; 
+      background-color: rgba(0,0,0,0.6); 
+    }
+
+    .modal-content {
+      background-color: #fefefe;
+      margin: 60px auto;
+      padding: 20px 30px;
+      border: 1px solid #888;
+      width: 90%;
+      max-width: 450px;
+      border-radius: 15px;
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+      position: relative;
+      font-size: 16px;
+    }
+
+    .modal-header {
+      font-weight: bold;
+      font-size: 1.4em;
+      margin-bottom: 15px;
+      text-align: center;
+    }
+
+    .modal-close {
+      color: #aaa;
+      position: absolute;
+      top: 15px;
+      right: 20px;
+      font-size: 28px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: color 0.3s ease;
+    }
+    .modal-close:hover {
+      color: #000;
+    }
+
+    .modal-group {
+      margin-bottom: 15px;
+    }
+
+    .modal-group label {
+      display: block;
+      margin-bottom: 6px;
+      font-weight: 600;
+    }
+
+    .modal-group select, .modal-group input[type="checkbox"] {
+      width: 100%;
+      padding: 8px;
+      font-size: 14px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      box-sizing: border-box;
+    }
+
+    .modal-group.inline-checkboxes {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .modal-group.inline-checkboxes label {
+      font-weight: normal;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    .modal-footer {
+      text-align: center;
+      margin-top: 25px;
+    }
+
+    .modal-footer button {
+      background-color: #8cbb3b;
+      color: white;
+      padding: 10px 25px;
+      border: none;
+      border-radius: 8px;
+      font-weight: bold;
+      font-size: 1em;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      margin: 0 8px;
+    }
+
+    .modal-footer button:hover {
+      background-color: #7aa92e;
+    }
+
+    /* Filter modal trigger button */
+    #filterModalBtn {
+      background-color: #4a90e2;
+      color: white;
+      padding: 10px 18px;
+      border: none;
+      border-radius: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-left: 10px;
+      font-size: 1em;
+      vertical-align: middle;
+      transition: background-color 0.3s ease;
+    }
+    #filterModalBtn:hover {
+      background-color: #357ABD;
+    }
+
     @media (max-width: 600px) {
       .background-wrapper {
         padding: 10px;
@@ -257,6 +378,11 @@
         font-size: 0.8em;
         padding: 2px 6px;
       }
+      #filterModalBtn {
+        margin-left: 0;
+        margin-top: 10px;
+        width: 100%;
+      }
     }
   </style>
 </head>
@@ -276,8 +402,8 @@
         </a>
       </div>
 
-      <div class="controls">
-        <input type="text" id="searchInput" placeholder="Search by item name..." />
+      <div class="controls" aria-label="Search and filter controls">
+        <input type="text" id="searchInput" placeholder="Search by item name..." aria-label="Search items by name" />
         <select id="categoryFilter" aria-label="Filter by category">
           <option value="">All Categories</option>
         </select>
@@ -285,11 +411,12 @@
           <option value="newest">Sort by: Newest</option>
           <option value="oldest">Sort by: Oldest</option>
         </select>
+        <button id="filterModalBtn" aria-haspopup="dialog" aria-controls="filterModal" aria-expanded="false" aria-label="Open advanced filter options">Advanced Filters</button>
       </div>
 
-      <div id="listings">
+      <div id="listings" aria-live="polite" aria-busy="true">
         <!-- Skeleton loaders -->
-        <div class="skeleton-card">
+        <div class="skeleton-card" role="status" aria-label="Loading content">
           <div class="skeleton-thumbnail"></div>
           <div class="skeleton-text">
             <div class="skeleton-line" style="width: 60%;"></div>
@@ -297,7 +424,7 @@
             <div class="skeleton-line" style="width: 40%;"></div>
           </div>
         </div>
-        <div class="skeleton-card">
+        <div class="skeleton-card" role="status" aria-label="Loading content">
           <div class="skeleton-thumbnail"></div>
           <div class="skeleton-text">
             <div class="skeleton-line" style="width: 70%;"></div>
@@ -307,130 +434,437 @@
         </div>
       </div>
 
-      <div id="lightbox" onclick="this.style.display='none'">
-        <img id="lightbox-img" src="" alt="Enlarged preview" />
+      <!-- Lightbox for images -->
+      <div id="lightbox" role="dialog" aria-modal="true" aria-label="Image preview" tabindex="-1">
+        <img src="" alt="Full size preview" />
       </div>
 
-      <div style="margin-top: 40px; text-align: center; font-size: 14px; color: #666;">
-        <p>
-          <strong>Disclaimer:</strong> The PTA Community Marketplace only facilitates the initial contact between buyers and sellers. All further communication and transactions are the responsibility of the participants. The PTA is not liable for any outcomes resulting from these interactions.
-        </p>
-        <p>
-          If you have any questions, please <a href="mailto:PTA@greatlinfordprimaryschool.co.uk">contact us at PTA@greatlinfordprimaryschool.co.uk</a>.
-        </p>
+      <!-- Advanced Filter Modal -->
+      <div id="filterModal" class="modal" role="dialog" aria-modal="true" aria-labelledby="filterModalTitle" aria-hidden="true">
+        <div class="modal-content">
+          <span class="modal-close" role="button" aria-label="Close advanced filters">&times;</span>
+          <div class="modal-header" id="filterModalTitle">Advanced Filters</div>
+          <form id="filterForm" aria-describedby="filterModalDesc">
+            <div id="filterModalDesc" style="font-size:0.9em; color:#555; margin-bottom:15px;">
+              Select your preferred filters below and click "Apply Filters".
+            </div>
+            <div class="modal-group">
+              <label for="modalCategoryFilter">Category</label>
+              <select id="modalCategoryFilter" name="category">
+                <option value="">All Categories</option>
+              </select>
+            </div>
+            <div class="modal-group">
+              <label>Condition</label>
+              <div class="modal-group inline-checkboxes">
+                <label><input type="checkbox" name="condition" value="New" /> New</label>
+                <label><input type="checkbox" name="condition" value="Used" /> Used</label>
+              </div>
+            </div>
+            <div class="modal-group">
+              <label for="minPrice">Min Price ($)</label>
+              <input type="number" id="minPrice" name="minPrice" min="0" step="0.01" placeholder="No minimum" />
+            </div>
+            <div class="modal-group">
+              <label for="maxPrice">Max Price ($)</label>
+              <input type="number" id="maxPrice" name="maxPrice" min="0" step="0.01" placeholder="No maximum" />
+            </div>
+            <div class="modal-group">
+              <label>Expiry Status</label>
+              <div class="modal-group inline-checkboxes">
+                <label><input type="checkbox" name="expiryStatus" value="expired" /> Expired</label>
+                <label><input type="checkbox" name="expiryStatus" value="expiringSoon" /> Expiring Soon (within 30 days)</label>
+                <label><input type="checkbox" name="expiryStatus" value="valid" /> Valid (more than 30 days)</label>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="submit" id="applyFiltersBtn">Apply Filters</button>
+              <button type="button" id="clearFiltersBtn">Clear Filters</button>
+            </div>
+          </form>
+        </div>
       </div>
 
     </div>
   </div>
 
 <script>
-  const endpoint = "https://script.google.com/macros/s/AKfycby3uB_X3yr3sKGrugo8KTh9_FQezJN28wRhU1lmKYZBY5jj43EOXazsQ_LWrbtEUYPb/exec";
+  // Constants and global variables
+  const listingsContainer = document.getElementById('listings');
+  const searchInput = document.getElementById('searchInput');
+  const categoryFilter = document.getElementById('categoryFilter');
+  const sortOrderSelect = document.getElementById('sortOrder');
 
-  async function loadListings() {
+  // Modal elements
+  const filterModal = document.getElementById('filterModal');
+  const filterModalBtn = document.getElementById('filterModalBtn');
+  const modalCloseBtn = filterModal.querySelector('.modal-close');
+  const filterForm = document.getElementById('filterForm');
+  const clearFiltersBtn = document.getElementById('clearFiltersBtn');
+
+  // Modal filter inputs
+  const modalCategoryFilter = document.getElementById('modalCategoryFilter');
+  const modalConditionCheckboxes = filterForm.querySelectorAll('input[name="condition"]');
+  const minPriceInput = document.getElementById('minPrice');
+  const maxPriceInput = document.getElementById('maxPrice');
+  const expiryStatusCheckboxes = filterForm.querySelectorAll('input[name="expiryStatus"]');
+
+  // State to hold all listings from the API
+  let allListings = [];
+
+  // Util function to fetch listings
+  async function fetchListings() {
+    const url = 'https://opensheet.elk.sh/1cpRGHGu4DKS3v3D4OrUu6MrL_Q8D1qa5b7cwLcPtdAE/Items';
     try {
-      const res = await fetch(endpoint);
-      const data = await res.json();
-      const listings = data.filter(item => item["Item Name"]);
-
-      const container = document.getElementById("listings");
-      const categoryDropdown = document.getElementById("categoryFilter");
-      const sortOrder = document.getElementById("sortOrder");
-      const searchInput = document.getElementById("searchInput");
-
-      const categories = [...new Set(listings.map(i => i["Category"]).filter(Boolean))];
-      categoryDropdown.innerHTML = `<option value="">All Categories</option>` +
-        categories.map(c => `<option value="${c}">${c}</option>`).join('');
-
-      function renderFilteredListings() {
-        const searchValue = searchInput.value.toLowerCase();
-        const selectedCategory = categoryDropdown.value;
-        const sort = sortOrder.value;
-
-        let filtered = listings.filter(item => {
-          const matchesSearch = item["Item Name"].toLowerCase().includes(searchValue);
-          const matchesCategory = !selectedCategory || item["Category"] === selectedCategory;
-          return matchesSearch && matchesCategory;
-        });
-
-        filtered.sort((a, b) => {
-          const dateA = new Date(a.Timestamp);
-          const dateB = new Date(b.Timestamp);
-          return sort === "oldest" ? dateA - dateB : dateB - dateA;
-        });
-
-        container.innerHTML = "";
-
-        filtered.forEach(item => {
-          let badgeHTML = "";
-          if (item["Expiry Date"]) {
-            const today = new Date();
-            const expiryDate = new Date(item["Expiry Date"]);
-            const diffDays = Math.floor((expiryDate - today) / (1000 * 60 * 60 * 24));
-            const status = (item["Status"] || "").toLowerCase();
-
-            if (diffDays <= 7 && diffDays > 0 && status !== "expired" && status !== "sold") {
-              badgeHTML = `<span class="badge expiring-soon">Expiring Soon</span>`;
-            }
-          }
-
-          const itemName = encodeURIComponent(item["Item Name"] || "");
-          const defaultMessage = encodeURIComponent("Hi, I'm interested in this item. Is it still available please?");
-          const itemId = encodeURIComponent(item["Item ID"] || "");
-          const price = item["Price"] ? (String(item["Price"]).toLowerCase() === "free" ? "Free" : "£" + Number(item["Price"]).toFixed(2)) : "";
-
-          const contactFormUrl = `https://docs.google.com/forms/d/e/1FAIpQLSd85mhv1hfjrSu4ZmhQi6TZe4kmfVFhAtxrV14vU3Uk-Wkheg/viewform?usp=pp_url&entry.1181883131=${encodeURIComponent(itemId)}&entry.1811975642=${encodeURIComponent(itemName)}&entry.1847581834=${encodeURIComponent(price)}&entry.1513359632=${defaultMessage}`;
-
-          const imageFilename = item["Image Filename"]?.trim();
-          const imageUrl = imageFilename
-            ? `https://raw.githubusercontent.com/GLPS-PTA-Community/marketplace/main/images/${encodeURIComponent(imageFilename)}`
-            : null;
-
-          const div = document.createElement("div");
-          div.className = "item-card";
-
-          const imageHtml = imageUrl
-            ? `<img class="thumbnail" src="${imageUrl}" alt="Item image" onclick="showLightbox('${imageUrl}')"/>`
-            : `<div style="width:120px;height:90px;background:#ddd;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#666;">No Image</div>`;
-
-          div.innerHTML = `
-            ${imageHtml}
-            <div class="item-details">
-              <div class="item-title">${item["Item Name"]} ${badgeHTML}</div>
-              <div class="item-description">${item["Item Description"]}</div>
-              <p><strong>Category:</strong> ${item["Category"]}</p>
-              <p><strong>Condition:</strong> ${item["Condition"]}</p>
-              ${item["Age/Size"] ? `<p><strong>Size/Age:</strong> ${item["Age/Size"]}</p>` : ""}
-              ${item["Price"] ? (() => {const price = String(item["Price"]).toLowerCase();
-              if (price === "free") return `<p><strong>Price:</strong> Free</p>`;
-              const isNumeric = !isNaN(item["Price"]);
-              const formattedPrice = isNumeric ? `£${Number(item["Price"]).toFixed(2)}` : `£${item["Price"]}`;
-              return `<p><strong>Price:</strong> ${formattedPrice}</p>`;})() : ""}
-              <a href="${contactFormUrl}" class="contact-button" target="_blank" rel="noopener noreferrer">Contact Seller</a>
-            </div>
-          `;
-          container.appendChild(div);
-        });
-      }
-
-      searchInput.addEventListener("input", renderFilteredListings);
-      categoryDropdown.addEventListener("change", renderFilteredListings);
-      sortOrder.addEventListener("change", renderFilteredListings);
-
-      renderFilteredListings();
+      const response = await fetch(url);
+      if (!response.ok) throw new Error('Failed to fetch listings');
+      const data = await response.json();
+      return data;
     } catch (err) {
-      console.error("Error loading data:", err);
-      document.getElementById("listings").innerHTML = `<p>Failed to load listings.</p>`;
+      console.error('Error fetching data:', err);
+      return [];
     }
   }
 
-  function showLightbox(imgUrl) {
-    const lightbox = document.getElementById("lightbox");
-    const lightboxImg = document.getElementById("lightbox-img");
-    lightboxImg.src = imgUrl;
-    lightbox.style.display = "flex";
+  // Parse date string and return Date object or null if invalid
+  function parseDate(str) {
+    const date = new Date(str);
+    return isNaN(date) ? null : date;
   }
 
-  loadListings();
+  // Determine if item expires within 30 days
+  function isExpiringSoon(expiryDate) {
+    if (!expiryDate) return false;
+    const now = new Date();
+    const diffDays = (expiryDate - now) / (1000 * 60 * 60 * 24);
+    return diffDays >= 0 && diffDays <= 30;
+  }
+
+  // Determine if item is expired
+  function isExpired(expiryDate) {
+    if (!expiryDate) return false;
+    const now = new Date();
+    return expiryDate < now;
+  }
+
+  // Create option elements for category dropdowns
+  function populateCategoryOptions(categories) {
+    // Clear current options except first
+    [categoryFilter, modalCategoryFilter].forEach(selectEl => {
+      selectEl.innerHTML = '<option value="">All Categories</option>';
+      categories.forEach(cat => {
+        const opt = document.createElement('option');
+        opt.value = cat;
+        opt.textContent = cat;
+        selectEl.appendChild(opt);
+      });
+    });
+  }
+
+  // Render all listings based on filters
+  function renderListings(listings) {
+    listingsContainer.innerHTML = '';
+
+    if (!listings.length) {
+      listingsContainer.innerHTML = '<p style="text-align:center; color:#666;">No items found matching your criteria.</p>';
+      listingsContainer.setAttribute('aria-busy', 'false');
+      return;
+    }
+
+    listings.forEach(item => {
+      const itemCard = document.createElement('div');
+      itemCard.className = 'item-card';
+
+      // Parse expiry date
+      const expiryDate = parseDate(item['Expiry Date']);
+      const expired = isExpired(expiryDate);
+      const expiringSoon = isExpiringSoon(expiryDate);
+
+      // Thumbnail image with lightbox
+      const img = document.createElement('img');
+      img.src = item['Image URL'] || 'https://via.placeholder.com/120x90?text=No+Image';
+      img.alt = item['Name'];
+      img.className = 'thumbnail';
+      img.tabIndex = 0;
+      img.setAttribute('role', 'button');
+      img.setAttribute('aria-label', `View full image of ${item['Name']}`);
+      img.addEventListener('click', () => openLightbox(img.src, item['Name']));
+      img.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          openLightbox(img.src, item['Name']);
+        }
+      });
+
+      // Details container
+      const details = document.createElement('div');
+      details.className = 'item-details';
+
+      // Title with condition badge
+      const title = document.createElement('h2');
+      title.className = 'item-title';
+      title.textContent = item['Name'];
+
+      // Condition badge
+      if (item.Condition) {
+        const condBadge = document.createElement('span');
+        condBadge.textContent = item.Condition;
+        condBadge.style.backgroundColor = item.Condition === 'New' ? '#4caf50' : '#2196f3';
+        condBadge.style.color = 'white';
+        condBadge.style.padding = '3px 8px';
+        condBadge.style.borderRadius = '5px';
+        condBadge.style.fontSize = '0.85em';
+        condBadge.style.marginLeft = '12px';
+        condBadge.style.fontWeight = '600';
+        title.appendChild(condBadge);
+      }
+
+      // Description
+      const desc = document.createElement('p');
+      desc.className = 'item-description';
+      desc.textContent = item.Description;
+
+      // Expiry badge if expiring soon or expired
+      if (expired) {
+        const expiredBadge = document.createElement('span');
+        expiredBadge.className = 'badge expiring-soon';
+        expiredBadge.textContent = 'Expired';
+        expiredBadge.style.backgroundColor = '#d32f2f';
+        expiredBadge.style.marginLeft = '8px';
+        title.appendChild(expiredBadge);
+      } else if (expiringSoon) {
+        const soonBadge = document.createElement('span');
+        soonBadge.className = 'badge expiring-soon';
+        soonBadge.textContent = 'Expiring Soon';
+        title.appendChild(soonBadge);
+      }
+
+      // Contact button
+      const contactBtn = document.createElement('a');
+      contactBtn.href = `mailto:${item.Email}?subject=Inquiry about ${encodeURIComponent(item['Name'])}`;
+      contactBtn.className = 'contact-button';
+      contactBtn.textContent = 'Contact Seller';
+      contactBtn.setAttribute('aria-label', `Contact seller about ${item['Name']}`);
+
+      // Append all
+      details.appendChild(title);
+      details.appendChild(desc);
+      details.appendChild(contactBtn);
+
+      itemCard.appendChild(img);
+      itemCard.appendChild(details);
+
+      listingsContainer.appendChild(itemCard);
+    });
+
+    listingsContainer.setAttribute('aria-busy', 'false');
+  }
+
+  // Filtering function that applies all filters from UI and modal
+  function applyFilters() {
+    let filtered = allListings;
+
+    const searchTerm = searchInput.value.trim().toLowerCase();
+    const category = categoryFilter.value;
+    const sortOrder = sortOrderSelect.value;
+
+    // Advanced modal filters
+    const modalCategory = modalCategoryFilter.value;
+
+    // Conditions checked in modal (multi-select checkboxes)
+    const selectedConditions = Array.from(modalConditionCheckboxes)
+      .filter(cb => cb.checked)
+      .map(cb => cb.value);
+
+    // Price range
+    const minPriceVal = parseFloat(minPriceInput.value);
+    const maxPriceVal = parseFloat(maxPriceInput.value);
+
+    // Expiry statuses
+    const selectedExpiryStatuses = Array.from(expiryStatusCheckboxes)
+      .filter(cb => cb.checked)
+      .map(cb => cb.value);
+
+    // Search by item name
+    if (searchTerm) {
+      filtered = filtered.filter(item => item.Name.toLowerCase().includes(searchTerm));
+    }
+
+    // Filter by category (from main or modal filter) - modal category takes precedence if selected
+    if (modalCategory) {
+      filtered = filtered.filter(item => item.Category === modalCategory);
+    } else if (category) {
+      filtered = filtered.filter(item => item.Category === category);
+    }
+
+    // Filter by condition(s) if any selected
+    if (selectedConditions.length > 0) {
+      filtered = filtered.filter(item => selectedConditions.includes(item.Condition));
+    }
+
+    // Filter by price range
+    filtered = filtered.filter(item => {
+      let price = parseFloat(item.Price);
+      if (isNaN(price)) return false; // exclude items without price or invalid price
+      if (!isNaN(minPriceVal) && price < minPriceVal) return false;
+      if (!isNaN(maxPriceVal) && price > maxPriceVal) return false;
+      return true;
+    });
+
+    // Filter by expiry status
+    if (selectedExpiryStatuses.length > 0) {
+      filtered = filtered.filter(item => {
+        const expiryDate = parseDate(item['Expiry Date']);
+        const expired = isExpired(expiryDate);
+        const expiringSoon = isExpiringSoon(expiryDate);
+        const valid = !expired && !expiringSoon;
+
+        return selectedExpiryStatuses.some(status => {
+          if (status === 'expired') return expired;
+          if (status === 'expiringSoon') return expiringSoon;
+          if (status === 'valid') return valid;
+          return false;
+        });
+      });
+    }
+
+    // Sort by date added (assuming the sheet has a 'Date Added' or 'Timestamp' field)
+    // Since no date field specified in your sample, fallback to newest first by default
+    // Or by some existing 'Date Added' or similar if present
+    if (sortOrder === 'newest') {
+      filtered.sort((a, b) => {
+        // Attempt to parse 'Date Added' or fallback to string comparison on Name or similar
+        let dateA = parseDate(a['Date Added']) || new Date(0);
+        let dateB = parseDate(b['Date Added']) || new Date(0);
+        return dateB - dateA;
+      });
+    } else if (sortOrder === 'oldest') {
+      filtered.sort((a, b) => {
+        let dateA = parseDate(a['Date Added']) || new Date(0);
+        let dateB = parseDate(b['Date Added']) || new Date(0);
+        return dateA - dateB;
+      });
+    }
+
+    renderListings(filtered);
+  }
+
+  // Modal open/close handlers with accessibility
+  function openModal() {
+    filterModal.style.display = 'block';
+    filterModal.setAttribute('aria-hidden', 'false');
+    filterModalBtn.setAttribute('aria-expanded', 'true');
+    // Focus first focusable element inside modal for accessibility
+    filterForm.querySelector('select, input').focus();
+    // Trap focus inside modal
+    document.addEventListener('focus', trapFocus, true);
+  }
+
+  function closeModal() {
+    filterModal.style.display = 'none';
+    filterModal.setAttribute('aria-hidden', 'true');
+    filterModalBtn.setAttribute('aria-expanded', 'false');
+    filterModalBtn.focus();
+    document.removeEventListener('focus', trapFocus, true);
+  }
+
+  // Trap focus inside modal for accessibility
+  function trapFocus(event) {
+    if (!filterModal.contains(event.target)) {
+      event.stopPropagation();
+      filterForm.querySelector('select, input').focus();
+    }
+  }
+
+  // Lightbox for images
+  const lightbox = document.getElementById('lightbox');
+  const lightboxImg = lightbox.querySelector('img');
+
+  function openLightbox(src, alt) {
+    lightbox.style.display = 'flex';
+    lightboxImg.src = src;
+    lightboxImg.alt = alt;
+    lightbox.focus();
+  }
+
+  function closeLightbox() {
+    lightbox.style.display = 'none';
+    lightboxImg.src = '';
+    lightboxImg.alt = '';
+  }
+
+  // Close lightbox on click outside image or ESC
+  lightbox.addEventListener('click', (e) => {
+    if (e.target === lightbox) closeLightbox();
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      if (lightbox.style.display === 'flex') closeLightbox();
+      if (filterModal.style.display === 'block') closeModal();
+    }
+  });
+
+  // Populate categories based on fetched data
+  function extractCategories(listings) {
+    const categoriesSet = new Set();
+    listings.forEach(item => {
+      if (item.Category) categoriesSet.add(item.Category);
+    });
+    return Array.from(categoriesSet).sort();
+  }
+
+  // Initialize page
+  async function init() {
+    listingsContainer.setAttribute('aria-busy', 'true');
+    allListings = await fetchListings();
+
+    // Extract and populate category options
+    const categories = extractCategories(allListings);
+    populateCategoryOptions(categories);
+
+    // Initially render all listings
+    applyFilters();
+
+    // Remove skeleton loaders
+    // (already replaced by renderListings)
+
+    // Event listeners for filters
+    searchInput.addEventListener('input', () => applyFilters());
+    categoryFilter.addEventListener('change', () => applyFilters());
+    sortOrderSelect.addEventListener('change', () => applyFilters());
+
+    // Modal open/close
+    filterModalBtn.addEventListener('click', () => {
+      if (filterModal.style.display === 'block') {
+        closeModal();
+      } else {
+        openModal();
+      }
+    });
+    modalCloseBtn.addEventListener('click', closeModal);
+
+    // Close modal on clicking outside modal content
+    filterModal.addEventListener('click', (e) => {
+      if (e.target === filterModal) closeModal();
+    });
+
+    // Handle modal form submit (apply filters)
+    filterForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      applyFilters();
+      closeModal();
+    });
+
+    // Clear filters button
+    clearFiltersBtn.addEventListener('click', () => {
+      filterForm.reset();
+      applyFilters();
+      closeModal();
+    });
+  }
+
+  // Run init on page load
+  window.addEventListener('DOMContentLoaded', init);
 </script>
 
 </body>
