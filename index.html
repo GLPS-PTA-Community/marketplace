@@ -398,7 +398,7 @@
               <p><strong>Category:</strong> ${item["Category"]}</p>
               <p><strong>Condition:</strong> ${item["Condition"]}</p>
               ${item["Age/Size"] ? `<p><strong>Size/Age:</strong> ${item["Age/Size"]}</p>` : ""}
-              ${item["Price"] ? `<p><strong>Price (£):</strong> ${item["Price"]}</p>` : ""}
+              ${item["Price"] ? `<p><strong>Price:</strong> £${item["Price"]}</p>` : ""}
               <a href="${contactFormUrl}" class="contact-button" target="_blank" rel="noopener noreferrer">Contact Seller</a>
             </div>
           `;
