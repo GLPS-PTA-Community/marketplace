@@ -17,13 +17,11 @@
     body {
       font-family: 'Segoe UI', sans-serif;
       margin: 0;
-      /* Remove background here since it's on wrapper now */
     }
 
     .main-wrapper {
       max-width: 1000px;
       margin: 0 auto;
-      /* padding removed from body and now on wrapper */
     }
 
     @keyframes fadeSlideUp {
@@ -207,7 +205,6 @@
       font-size: 0.9em;
     }
 
-    /* Responsive mobile optimizations */
     @media (max-width: 600px) {
       .background-wrapper {
         padding: 10px;
@@ -401,6 +398,7 @@
               <p><strong>Category:</strong> ${item["Category"]}</p>
               <p><strong>Condition:</strong> ${item["Condition"]}</p>
               ${item["Age/Size"] ? `<p><strong>Size/Age:</strong> ${item["Age/Size"]}</p>` : ""}
+              ${item["Price"] ? `<p><strong>Price:</strong> ${item["Price"]}</p>` : ""}
               <a href="${contactFormUrl}" class="contact-button" target="_blank" rel="noopener noreferrer">Contact Seller</a>
             </div>
           `;
