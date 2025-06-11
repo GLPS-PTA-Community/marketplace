@@ -296,13 +296,22 @@
         <div class="tagline">A community space to give, buy, sell and promote the reuse of pre-loved uniform and items</div>
       </div>
 
-      <div class="add-button">
+      
+    <div style="text-align: center; margin-bottom: 20px;">
+      <div class="add-button" style="display: inline-block; margin-right: 10px;">
+    
         <a href="https://docs.google.com/forms/d/e/1FAIpQLSeMm3omCNgUCGx_sx6NMYikU_JO8kWU_5S9fj2G9HG8n8DUUw/viewform" target="_blank" rel="noopener noreferrer">
           Add new listing
         </a>
+      
       </div>
+      <div class="about-button" style="display: inline-block;">
+        <button onclick="openModal()" style="background-color: #f57c00; color: white; padding: 12px 25px; font-weight: bold; border-radius: 8px; font-size: 1em; border: none; cursor: pointer;">About</button>
+      </div>
+    </div>
 
-      <div class="controls">
+    <div class="controls">
+    
         <input type="text" id="searchInput" placeholder="Search by item name..." />
         <select id="categoryFilter" aria-label="Filter by category">
           <option value="">All Categories</option>
@@ -463,6 +472,30 @@
   }
 
   loadListings();
+</script>
+
+
+<div id="aboutModal" class="modal-overlay" onclick="closeModal(event)" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.6); display: none; justify-content: center; align-items: center; z-index: 1000;">
+  <div class="modal-content" onclick="event.stopPropagation()" style="background-color: #fdfbee; padding: 20px; max-width: 600px; width: 90%; border-radius: 10px; position: relative; max-height: 90vh; overflow-y: auto;">
+    <button class="close-modal" onclick="closeModal()" style="position: absolute; top: 10px; right: 15px; background: none; border: none; font-size: 1.5em; cursor: pointer; color: #333;">×</button>
+    <h2>About the Community Marketplace</h2>
+    <p>The Community Marketplace is a platform run by the GLPS PTA to help families give away, sell, or buy school-related items such as uniforms, books, toys, and sports equipment.</p>
+    <p>Seller email addresses are only shared when a buyer submits a contact request. After that, it's up to the seller to respond and handle all communication. The PTA does not get involved in any contact beyond that point.</p>
+    <p>We do not participate in, manage, or profit from any financial transactions. All responsibility for communication and exchanges lies with the individuals involved.</p>
+    <p>Listings remain live for 30 days. A reminder will be sent 7 days before expiry to renew the listing. If not renewed or marked as sold, the listing will be removed, and any associated images will be permanently deleted. It is the seller’s responsibility to mark items as sold in a timely manner.</p>
+    <p>Please use the site respectfully, and feel free to share your feedback at: <a href="mailto:pta@greatlinfordprimaryschool.co.uk">pta@greatlinfordprimaryschool.co.uk</a></p>
+    <p>— GLPS PTA Team</p>
+  </div>
+</div>
+<script>
+  function openModal() {
+    document.getElementById("aboutModal").style.display = "flex";
+    document.body.style.overflow = "hidden";
+  }
+  function closeModal(event) {
+    document.getElementById("aboutModal").style.display = "none";
+    document.body.style.overflow = "";
+  }
 </script>
 
 </body>
