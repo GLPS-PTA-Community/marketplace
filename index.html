@@ -331,7 +331,35 @@
           <option value="newest">Sort by: Newest</option>
           <option value="oldest">Sort by: Oldest</option>
         </select>
-      </div>
+      
+<!-- 🚧 FILTER PANEL START -->
+<div class="filter-toggle-container" style="text-align: center; margin-top: 10px;">
+  <button class="primary-button orange" onclick="toggleFilterPanel()">Show Filters ▼</button>
+</div>
+
+<div id="collapsibleFilters" style="display:none; margin-bottom: 20px;">
+  <div class="controls" style="display: flex; flex-wrap: wrap; justify-content: center; gap: 10px;">
+    <select id="sizeFilter" aria-label="Filter by size">
+      <option value="">All Sizes</option>
+    </select>
+    <select id="ageFilter" aria-label="Filter by age">
+      <option value="">All Ages</option>
+    </select>
+    <select id="conditionFilter" aria-label="Filter by condition">
+      <option value="">All Conditions</option>
+    </select>
+    <label style="display: flex; align-items: center;">
+      Max Price: £<span id="priceDisplay">10</span>
+      <input type="range" id="priceSlider" min="0" max="10" value="10" step="0.5" style="margin-left: 10px;" />
+    </label>
+    <label style="display: flex; align-items: center;">
+      <input type="checkbox" id="freeOnlyCheckbox" style="margin-right: 5px;" /> Free only
+    </label>
+    <button class="primary-button orange" style="margin-top: 5px;" onclick="renderFilteredListings()">Apply Filters</button>
+  </div>
+</div>
+<!-- 🚧 FILTER PANEL END -->
+
 
       <div id="listings">
         <!-- Skeleton loaders -->
@@ -507,6 +535,107 @@
     document.getElementById("aboutModal").style.display = "none";
     document.body.style.overflow = "";
   }
+</script>
+
+
+<script>
+function toggleFilterPanel() {
+  const panel = document.getElementById("collapsibleFilters");
+  const button = document.querySelector("button[onclick='toggleFilterPanel()']");
+  if (panel.style.display === "none") {
+    panel.style.display = "block";
+    button.innerHTML = "Hide Filters ▲";
+  } else {
+    panel.style.display = "none";
+    button.innerHTML = "Show Filters ▼";
+  }
+}
+document.addEventListener("DOMContentLoaded", function () {
+  const slider = document.getElementById("priceSlider");
+  const output = document.getElementById("priceDisplay");
+  if (slider && output) {
+    output.textContent = slider.value;
+    slider.addEventListener("input", function () {
+      output.textContent = this.value;
+    });
+  }
+});
+</script>
+
+
+<script>
+function renderFilteredListings() {
+  const listings = document.querySelectorAll('.listing-card');
+  const size = document.getElementById('sizeFilter').value.toLowerCase();
+  const age = document.getElementById('ageFilter').value.toLowerCase();
+  const condition = document.getElementById('conditionFilter').value.toLowerCase();
+  const maxPrice = parseFloat(document.getElementById('priceSlider').value);
+  const freeOnly = document.getElementById('freeOnlyCheckbox').checked;
+  const sortOrder = document.getElementById('sortOrder').value;
+
+  const listingArray = Array.from(listings);
+
+  listingArray.forEach(card => {
+    const cardSize = (card.getAttribute('data-size') || '').toLowerCase();
+    const cardAge = (card.getAttribute('data-age') || '').toLowerCase();
+    const cardCondition = (card.getAttribute('data-condition') || '').toLowerCase();
+    const cardPrice = parseFloat(card.getAttribute('data-price')) || 0;
+
+    let show = true;
+    if (size && cardSize !== size) show = false;
+    if (age && cardAge !== age) show = false;
+    if (condition && cardCondition !== condition) show = false;
+    if (freeOnly && cardPrice > 0) show = false;
+    if (cardPrice > maxPrice) show = false;
+
+    card.style.display = show ? 'block' : 'none';
+  });
+
+  // Sorting
+  const container = document.getElementById('listings');
+  listingArray.sort((a, b) => {
+    const dateA = new Date(a.getAttribute('data-timestamp'));
+    const dateB = new Date(b.getAttribute('data-timestamp'));
+    return sortOrder === 'newest' ? dateB - dateA : dateA - dateB;
+  });
+
+  listingArray.forEach(card => container.appendChild(card));
+}
+
+// Populate dropdowns
+document.addEventListener("DOMContentLoaded", function () {
+  const populate = (filterId, attr) => {
+    const values = new Set();
+    document.querySelectorAll(`.listing-card`).forEach(card => {
+      const value = card.getAttribute(`data-${attr}`);
+      if (value) values.add(value);
+    });
+    const select = document.getElementById(filterId);
+    if (select) {
+      [...values].sort().forEach(val => {
+        const option = document.createElement("option");
+        option.value = val;
+        option.textContent = val;
+        select.appendChild(option);
+      });
+    }
+  };
+  populate("sizeFilter", "size");
+  populate("ageFilter", "age");
+  populate("conditionFilter", "condition");
+});
+</script>
+
+
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  document.querySelectorAll('.listing-card').forEach(card => {
+    const age = card.getAttribute('data-age');
+    const size = card.getAttribute('data-size');
+    if (age) card.querySelector('.age-text').textContent = age;
+    if (size) card.querySelector('.size-text').textContent = size;
+  });
+});
 </script>
 
 </body>
