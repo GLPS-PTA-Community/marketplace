@@ -638,5 +638,67 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 </script>
 
+
+<script>
+async function loadListings() {
+  const sheetId = 'YOUR_SHEET_ID'; // Replace with actual ID if not already handled
+  const sheetRange = 'Marketplace';
+  const url = `https://opensheet.elk.sh/${sheetId}/${sheetRange}`;
+
+  try {
+    const response = await fetch(url);
+    const data = await response.json();
+
+    const listingsContainer = document.getElementById("listings");
+    listingsContainer.innerHTML = "";
+
+    data.forEach(item => {
+      const card = document.createElement("div");
+      card.className = "listing-card";
+      card.setAttribute("data-category", item['Category'] || '');
+      card.setAttribute("data-price", parseFloat(item['Price']) || 0);
+      card.setAttribute("data-age", item['Age'] || '');
+      card.setAttribute("data-size", item['Size'] || '');
+      card.setAttribute("data-condition", item['Condition'] || '');
+      card.setAttribute("data-timestamp", new Date(item['Timestamp']).toISOString());
+
+      const imgUrl = item['Upload Item Photo'] || '';
+      const imageHtml = imgUrl
+        ? `<img src="${imgUrl}" alt="Item photo" class="listing-image">`
+        : `<div class="listing-image placeholder">No Image</div>`;
+
+      const priceHtml = item['Price'] === '0' || item['Price'] === 0
+        ? `<p class="price">Free</p>`
+        : `<p class="price">£${item['Price']}</p>`;
+
+      const metaHtml = `
+        <div class="listing-meta">
+          ${item['Age'] ? `<span>Age: ${item['Age']}</span>` : ''}
+          ${item['Size'] ? `<span>Size: ${item['Size']}</span>` : ''}
+          ${item['Condition'] ? `<span>Condition: ${item['Condition']}</span>` : ''}
+        </div>
+      `;
+
+      card.innerHTML = `
+        ${imageHtml}
+        <div class="listing-details">
+          <h3>${item['Item Name'] || 'No title'}</h3>
+          ${priceHtml}
+          <p>${item['Item Description'] || ''}</p>
+          ${metaHtml}
+        </div>
+      `;
+
+      listingsContainer.appendChild(card);
+    });
+
+    renderFilteredListings();
+  } catch (err) {
+    console.error("Failed to load listings:", err);
+  }
+}
+document.addEventListener("DOMContentLoaded", loadListings);
+</script>
+
 </body>
 </html>
