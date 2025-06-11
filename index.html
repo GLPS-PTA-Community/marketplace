@@ -6,6 +6,7 @@
   <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/GLPS-PTA-Community/marketplace/main/images/pta-logo.png">
   <title>Community Marketplace</title>
   <style>
+    /* Background wrapper to contain main content and apply background */
     .background-wrapper {
       background-color: #fdfbee;
       padding: 20px;
@@ -59,142 +60,410 @@
 
     .header-box h1 {
       margin: 0;
-      font-size: clamp(1.8rem, 6vw, 2.5rem);
+      font-size: 2em;
     }
 
     .header-box .subheading {
       margin-top: 5px;
-      font-size: 0.9em;
+      font-size: 0.85em;
       color: #f9f9f9;
       opacity: 0.6;
+      font-weight: normal;
     }
 
     .header-box .tagline {
       margin-top: 10px;
-      font-size: clamp(0.9em, 1.5vw, 1em);
+      font-size: 1em;
       color: #ffffff;
       opacity: 0.85;
       font-style: italic;
     }
 
-    .button-row {
-      display: flex;
-      justify-content: center;
-      gap: 10px;
-      flex-wrap: wrap;
+    .add-button {
+      text-align: center;
       margin-bottom: 20px;
     }
 
-    .button-row a, .button-row button {
+    .add-button a {
+      background-color: #f57c00;
+      color: white;
       padding: 12px 25px;
       text-decoration: none;
       font-weight: bold;
       border-radius: 8px;
       font-size: 1em;
-      border: none;
+      display: inline-block;
+      transition: background-color 0.3s ease;
+    }
+
+    .add-button a:hover {
+      background-color: #e06c00;
+    }
+
+    .controls {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    input, select {
+      padding: 10px;
+      font-size: 16px;
+      margin: 5px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      min-width: 150px;
+      box-sizing: border-box;
+    }
+
+    .item-card, .skeleton-card {
+      background-color: #fff;
+      border-radius: 10px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      margin: 20px auto;
+      padding: 20px;
+      max-width: 600px;
+      display: flex;
+      gap: 15px;
+      box-sizing: border-box;
+    }
+
+    .skeleton-card {
+      animation: pulse 1.5s infinite ease-in-out;
+      background: linear-gradient(90deg, #eee 25%, #f5f5f5 50%, #eee 75%);
+      background-size: 400% 100%;
+    }
+
+    .skeleton-thumbnail {
+      width: 120px;
+      height: 90px;
+      background-color: #ccc;
+      border-radius: 8px;
+    }
+
+    .skeleton-text {
+      flex: 1;
+    }
+
+    .skeleton-line {
+      height: 14px;
+      background-color: #ccc;
+      margin-bottom: 10px;
+      border-radius: 4px;
+    }
+
+    .item-details {
+      flex: 1;
+    }
+
+    .item-title {
+      font-size: 1.5em;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .item-description {
+      margin-bottom: 15px;
+      color: #555;
+    }
+
+    .contact-button {
+      display: inline-block;
+      background-color: #4CAF50;
+      color: white;
+      padding: 10px 20px;
+      text-decoration: none;
+      border-radius: 5px;
+      font-weight: bold;
+      transition: background-color 0.3s ease;
+    }
+
+    .contact-button:hover {
+      background-color: #45a049;
+    }
+
+    .thumbnail {
+      width: 120px;
+      height: 90px;
+      object-fit: cover;
+      border-radius: 8px;
+      border: 3px solid #8cbb3b;
       cursor: pointer;
+      flex-shrink: 0;
     }
 
-    .add-button a {
-      background-color: #8cbb3b;
-      color: white;
-    }
-
-    .about-button {
-      background-color: #f57c00;
-      color: white;
-    }
-
-    .about-modal {
-      display: none;
+    #lightbox {
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(0,0,0,0.6);
-      justify-content: center;
+      background: rgba(0,0,0,0.8);
+      display: none;
       align-items: center;
-      z-index: 1001;
+      justify-content: center;
+      z-index: 1000;
     }
 
-    .about-modal-content {
-      background-color: #fdfbee;
-      padding: 30px;
-      max-width: 600px;
+    #lightbox img {
+      max-width: 90%;
+      max-height: 80%;
       border-radius: 10px;
-      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-      text-align: left;
-      position: relative;
+      box-shadow: 0 0 15px #000;
     }
 
-    .about-modal-content h2 {
-      margin-top: 0;
-    }
-
-    .close-modal {
-      position: absolute;
-      top: 10px;
-      right: 15px;
-      font-size: 1.5em;
-      cursor: pointer;
-      color: #999;
-    }
-
-    .close-modal:hover {
-      color: black;
+    .badge.expiring-soon {
+      background-color: #ff9800;
+      color: white;
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-weight: bold;
+      font-size: 0.9em;
     }
 
     @media (max-width: 600px) {
-      .header-box .tagline {
+      .background-wrapper {
+        padding: 10px;
+      }
+      .main-wrapper {
+        padding: 0 5px;
+      }
+      .header-box {
+        padding: 15px 15px;
+        border-radius: 15px;
+      }
+      .header-box img {
+        height: 45px;
+        margin-bottom: 5px;
+      }
+      .header-box h1 {
+        font-size: clamp(1.5em, 6vw, 2.5em);
+        line-height: 1.2;
+      }
+      .header-box .subheading {
         font-size: 0.9em;
+      }
+      .header-box .tagline {
+        font-size: 0.95em;
+      }
+      .add-button a {
+        padding: 8px 16px;
+        font-size: 0.9em;
+        border-radius: 6px;
+      }
+      input, select {
+        padding: 8px;
+        font-size: 14px;
+        margin: 3px 2px;
+        min-width: 100px;
+      }
+      .item-card, .skeleton-card {
+        flex-direction: column;
+        max-width: 100%;
+        padding: 15px;
+      }
+      .thumbnail {
+        width: 100%;
+        height: auto;
+        max-height: 180px;
+        border-width: 2px;
+        margin-bottom: 10px;
+      }
+      .item-title {
+        font-size: 1.2em;
+      }
+      .contact-button {
+        padding: 8px 15px;
+        font-size: 0.9em;
+      }
+      .badge.expiring-soon {
+        font-size: 0.8em;
+        padding: 2px 6px;
       }
     }
   </style>
 </head>
 <body>
+
   <div class="background-wrapper">
     <div class="main-wrapper">
+
       <div class="header-box">
         <img src="https://raw.githubusercontent.com/GLPS-PTA-Community/marketplace/main/images/pta-logo.png" alt="PTA Logo" />
         <h1>Community Marketplace</h1>
         <div class="subheading">Brought to you by the GLPS PTA</div>
-        <div class="tagline">A community space to give, buy, sell and promote reuse of pre-loved uniform and items</div>
+        <div class="tagline">A community space to give, buy, sell and promote the reuse of pre-loved uniform and items</div>
       </div>
 
-      <div class="button-row">
-        <div class="add-button">
-          <a href="add.html">Add new listing</a>
+      <div class="add-button">
+        <a href="https://docs.google.com/forms/d/e/1FAIpQLSeMm3omCNgUCGx_sx6NMYikU_JO8kWU_5S9fj2G9HG8n8DUUw/viewform" target="_blank" rel="noopener noreferrer">
+          Add new listing
+        </a>
+      </div>
+
+      <div class="controls">
+        <input type="text" id="searchInput" placeholder="Search by item name..." />
+        <select id="categoryFilter" aria-label="Filter by category">
+          <option value="">All Categories</option>
+        </select>
+        <select id="sortOrder" aria-label="Sort order">
+          <option value="newest">Sort by: Newest</option>
+          <option value="oldest">Sort by: Oldest</option>
+        </select>
+      </div>
+
+      <div id="listings">
+        <!-- Skeleton loaders -->
+        <div class="skeleton-card">
+          <div class="skeleton-thumbnail"></div>
+          <div class="skeleton-text">
+            <div class="skeleton-line" style="width: 60%;"></div>
+            <div class="skeleton-line" style="width: 80%;"></div>
+            <div class="skeleton-line" style="width: 40%;"></div>
+          </div>
         </div>
-        <button class="about-button" onclick="document.getElementById('aboutModal').style.display='flex'">About</button>
-      </div>
-
-      <div id="aboutModal" class="about-modal">
-        <div class="about-modal-content">
-          <span class="close-modal" onclick="document.getElementById('aboutModal').style.display='none'">&times;</span>
-          <h2>About the Community Marketplace</h2>
-          <p>The Community Marketplace is a platform run by the GLPS PTA to help families give, sell, or buy school-related items like uniforms, books, toys, and sports equipment.</p>
-          <p>Email addresses from sellers are only shared when a buyer submits a contact request. It is then up to the seller to respond and manage all communication. The PTA is not involved in any contact beyond that point.</p>
-          <p>We do not take part in, manage, or profit from any financial transactions. Responsibility for all communication and exchanges lies with the individuals involved.</p>
-          <p>Listings are live for 30 days. You'll be reminded 7 days before expiry to renew. If not renewed or if marked as sold, listings will be removed from the site and the associated image will be permanently deleted. It is the seller’s responsibility to mark items as sold in a timely manner.</p>
-          <p>Please use the site respectfully, and feel free to share your thoughts at: <a href="mailto:pta@greatlinfordprimaryschool.co.uk">pta@greatlinfordprimaryschool.co.uk</a></p>
-          <p>— GLPS PTA Team</p>
+        <div class="skeleton-card">
+          <div class="skeleton-thumbnail"></div>
+          <div class="skeleton-text">
+            <div class="skeleton-line" style="width: 70%;"></div>
+            <div class="skeleton-line" style="width: 90%;"></div>
+            <div class="skeleton-line" style="width: 50%;"></div>
+          </div>
         </div>
       </div>
 
-      <div id="listingContainer">
-        <!-- Listings will be dynamically populated here -->
+      <div id="lightbox" onclick="this.style.display='none'">
+        <img id="lightbox-img" src="" alt="Enlarged preview" />
       </div>
+
+      <div style="margin-top: 40px; text-align: center; font-size: 14px; color: #666;">
+        <p>
+          <strong>Disclaimer:</strong> The PTA Community Marketplace only facilitates the initial contact between buyers and sellers. All further communication and transactions are the responsibility of the participants. The PTA is not liable for any outcomes resulting from these interactions.
+        </p>
+        <p>
+          If you have any questions, please contact us at <a href="mailto:PTA@greatlinfordprimaryschool.co.uk"> PTA@greatlinfordprimaryschool.co.uk</a>.
+        </p>
+      </div>
+
+      <footer>
+      <div style="text-align: center; margin-top: 40px; font-size: 0.9em; color: #666;">
+        This marketplace is managed by the Great Linford Primary School PTA. 2025
+      </div>
+    </footer>
+      
     </div>
   </div>
 
-  <script>
-    window.onclick = function(event) {
-      const modal = document.getElementById('aboutModal');
-      if (event.target === modal) {
-        modal.style.display = "none";
+<script>
+  const endpoint = "https://script.google.com/macros/s/AKfycby3uB_X3yr3sKGrugo8KTh9_FQezJN28wRhU1lmKYZBY5jj43EOXazsQ_LWrbtEUYPb/exec";
+
+  async function loadListings() {
+    try {
+      const res = await fetch(endpoint);
+      const data = await res.json();
+      const listings = data.filter(item => item["Item Name"]);
+
+      const container = document.getElementById("listings");
+      const categoryDropdown = document.getElementById("categoryFilter");
+      const sortOrder = document.getElementById("sortOrder");
+      const searchInput = document.getElementById("searchInput");
+
+      const categories = [...new Set(listings.map(i => i["Category"]).filter(Boolean))];
+      categoryDropdown.innerHTML = `<option value="">All Categories</option>` +
+        categories.map(c => `<option value="${c}">${c}</option>`).join('');
+
+      function renderFilteredListings() {
+        const searchValue = searchInput.value.toLowerCase();
+        const selectedCategory = categoryDropdown.value;
+        const sort = sortOrder.value;
+
+        let filtered = listings.filter(item => {
+          const matchesSearch = item["Item Name"].toLowerCase().includes(searchValue);
+          const matchesCategory = !selectedCategory || item["Category"] === selectedCategory;
+          return matchesSearch && matchesCategory;
+        });
+
+        filtered.sort((a, b) => {
+          const dateA = new Date(a.Timestamp);
+          const dateB = new Date(b.Timestamp);
+          return sort === "oldest" ? dateA - dateB : dateB - dateA;
+        });
+
+        container.innerHTML = "";
+
+        filtered.forEach(item => {
+          let badgeHTML = "";
+          if (item["Expiry Date"]) {
+            const today = new Date();
+            const expiryDate = new Date(item["Expiry Date"]);
+            const diffDays = Math.floor((expiryDate - today) / (1000 * 60 * 60 * 24));
+            const status = (item["Status"] || "").toLowerCase();
+
+            if (diffDays <= 7 && diffDays > 0 && status !== "expired" && status !== "sold") {
+              badgeHTML = `<span class="badge expiring-soon">Expiring Soon</span>`;
+            }
+          }
+
+          const itemName = encodeURIComponent(item["Item Name"] || "");
+          const defaultMessage = encodeURIComponent("Hi, I'm interested in this item. Is it still available please?");
+          const itemId = encodeURIComponent(item["Item ID"] || "");
+          const price = item["Price"] ? (String(item["Price"]).toLowerCase() === "free" ? "Free" : "£" + Number(item["Price"]).toFixed(2)) : "";
+
+          const contactFormUrl = `https://docs.google.com/forms/d/e/1FAIpQLSd85mhv1hfjrSu4ZmhQi6TZe4kmfVFhAtxrV14vU3Uk-Wkheg/viewform?usp=pp_url&entry.1181883131=${encodeURIComponent(itemId)}&entry.1811975642=${encodeURIComponent(itemName)}&entry.1847581834=${encodeURIComponent(price)}&entry.1513359632=${defaultMessage}`;
+
+          const imageFilename = item["Image Filename"]?.trim();
+          const imageUrl = imageFilename
+            ? `https://raw.githubusercontent.com/GLPS-PTA-Community/marketplace/main/images/${encodeURIComponent(imageFilename)}`
+            : null;
+
+          const div = document.createElement("div");
+          div.className = "item-card";
+
+          const imageHtml = imageUrl
+            ? `<img class="thumbnail" src="${imageUrl}" alt="Item image" onclick="showLightbox('${imageUrl}')"/>`
+            : `<div style="width:120px;height:90px;background:#ddd;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#666;">No Image</div>`;
+
+          div.innerHTML = `
+            ${imageHtml}
+            <div class="item-details">
+              <div class="item-title">${item["Item Name"]} ${badgeHTML}</div>
+              <div class="item-description">${item["Item Description"]}</div>
+              <p><strong>Category:</strong> ${item["Category"]}</p>
+              <p><strong>Condition:</strong> ${item["Condition"]}</p>
+              ${item["Age/Size"] ? `<p><strong>Size/Age:</strong> ${item["Age/Size"]}</p>` : ""}
+              ${item["Price"] ? (() => {const price = String(item["Price"]).toLowerCase();
+              if (price === "free") return `<p><strong>Price:</strong> Free</p>`;
+              const isNumeric = !isNaN(item["Price"]);
+              const formattedPrice = isNumeric ? `£${Number(item["Price"]).toFixed(2)}` : `£${item["Price"]}`;
+              return `<p><strong>Price:</strong> ${formattedPrice}</p>`;})() : ""}
+              <a href="${contactFormUrl}" class="contact-button" target="_blank" rel="noopener noreferrer">Contact Seller</a>
+            </div>
+          `;
+          container.appendChild(div);
+        });
       }
+
+      searchInput.addEventListener("input", renderFilteredListings);
+      categoryDropdown.addEventListener("change", renderFilteredListings);
+      sortOrder.addEventListener("change", renderFilteredListings);
+
+      renderFilteredListings();
+    } catch (err) {
+      console.error("Error loading data:", err);
+      document.getElementById("listings").innerHTML = `<p>Failed to load listings.</p>`;
     }
-  </script>
+  }
+
+  function showLightbox(imgUrl) {
+    const lightbox = document.getElementById("lightbox");
+    const lightboxImg = document.getElementById("lightbox-img");
+    lightboxImg.src = imgUrl;
+    lightbox.style.display = "flex";
+  }
+
+  loadListings();
+</script>
+
 </body>
 </html>
