@@ -321,17 +321,17 @@
       </div>
     </div>
 
-    <div class="controls">
     
-        <input type="text" id="searchInput" placeholder="Search by item name..." />
-        <select id="categoryFilter" aria-label="Filter by category">
-          <option value="">All Categories</option>
-        </select>
-        <select id="sortOrder" aria-label="Sort order">
-          <option value="newest">Sort by: Newest</option>
-          <option value="oldest">Sort by: Oldest</option>
-        </select>
-      </div>
+
+<div class="controls">
+  <input type="text" id="searchInput" placeholder="Search by item name..." />
+  <select id="categoryFilter" aria-label="Filter by category">
+    <option value="">All Categories</option>
+  </select>
+  <button class="primary-button orange" onclick="openFilterModal()">Filters</button>
+</div>
+
+
 
       <div id="listings">
         <!-- Skeleton loaders -->
@@ -468,7 +468,118 @@
       categoryDropdown.addEventListener("change", renderFilteredListings);
       sortOrder.addEventListener("change", renderFilteredListings);
 
-      renderFilteredListings();
+      
+function renderFilteredListings() {
+  const searchValue = document.getElementById("searchInput").value.toLowerCase();
+  const selectedCategory = document.getElementById("categoryFilter").value;
+  const sort = document.getElementById("sortOrder")?.value || "newest";
+
+  const selectedSize = document.getElementById("sizeFilter")?.value || "";
+  const selectedAge = document.getElementById("ageFilter")?.value || "";
+  const selectedCondition = document.getElementById("conditionFilter")?.value || "";
+  const priceCap = parseFloat(document.getElementById("priceSlider")?.value || "10");
+  const freeOnly = document.getElementById("freeOnlyCheckbox")?.checked || false;
+
+  let filtered = listings.filter(item => {
+    const matchesSearch = (item["Item Name"] || "").toLowerCase().includes(searchValue);
+    const matchesCategory = !selectedCategory || item["Category"] === selectedCategory;
+    const matchesSize = !selectedSize || item["Size"] === selectedSize;
+    const matchesAge = !selectedAge || item["Age"] === selectedAge;
+    const matchesCondition = !selectedCondition || item["Condition"] === selectedCondition;
+
+    let priceValue = 0;
+    if (item["Price"]) {
+      const lower = String(item["Price"]).toLowerCase();
+      if (lower === "free") {
+        priceValue = 0;
+      } else if (!isNaN(parseFloat(item["Price"]))) {
+        priceValue = parseFloat(item["Price"]);
+      } else {
+        return false;
+      }
+    }
+
+    const matchesPrice = priceValue <= priceCap;
+    const matchesFree = !freeOnly || priceValue === 0;
+
+    return matchesSearch && matchesCategory && matchesSize && matchesAge && matchesCondition && matchesPrice && matchesFree;
+  });
+
+  filtered.sort((a, b) => {
+    const dateA = new Date(a.Timestamp);
+    const dateB = new Date(b.Timestamp);
+    return sort === "oldest" ? dateA - dateB : dateB - dateA;
+  });
+
+  const container = document.getElementById("listings");
+  container.innerHTML = "";
+  filtered.forEach(item => {
+    let badgeHTML = "";
+    if (item["Expiry Date"]) {
+      const today = new Date();
+      const expiryDate = new Date(item["Expiry Date"]);
+      const diffDays = Math.floor((expiryDate - today) / (1000 * 60 * 60 * 24));
+      const status = (item["Status"] || "").toLowerCase();
+      if (diffDays <= 7 && diffDays > 0 && status !== "expired" && status !== "sold") {
+        badgeHTML = `<span class="badge expiring-soon">Expiring Soon</span>`;
+      }
+    }
+
+    const itemName = encodeURIComponent(item["Item Name"] || "");
+    const defaultMessage = encodeURIComponent("Hi, I'm interested in this item. Is it still available please?");
+    const itemId = encodeURIComponent(item["Item ID"] || "");
+    const price = item["Price"] ? (String(item["Price"]).toLowerCase() === "free" ? "Free" : "£" + Number(item["Price"]).toFixed(2)) : "";
+
+    const contactFormUrl = `https://docs.google.com/forms/d/e/1FAIpQLSd85mhv1hfjrSu4ZmhQi6TZe4kmfVFhAtxrV14vU3Uk-Wkheg/viewform?usp=pp_url&entry.1181883131=${encodeURIComponent(itemId)}&entry.1811975642=${encodeURIComponent(itemName)}&entry.1847581834=${encodeURIComponent(price)}&entry.1513359632=${defaultMessage}`;
+
+    const imageFilename = item["Image Filename"]?.trim();
+    const imageUrl = imageFilename
+      ? `https://raw.githubusercontent.com/GLPS-PTA-Community/marketplace/main/images/${encodeURIComponent(imageFilename)}`
+      : null;
+
+    const div = document.createElement("div");
+    div.className = "item-card";
+
+    const imageHtml = imageUrl
+      ? `<img class="thumbnail" src="${imageUrl}" alt="Item image" onclick="showLightbox('${imageUrl}')"/>`
+      : `<div style="width:120px;height:90px;background:#ddd;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#666;">No Image</div>`;
+
+    div.innerHTML = `
+      ${imageHtml}
+      <div class="item-details">
+        <div class="item-title">${item["Item Name"]} ${badgeHTML}</div>
+        <div class="item-description">${item["Item Description"]}</div>
+        <p><strong>Category:</strong> ${item["Category"]}</p>
+        <p><strong>Condition:</strong> ${item["Condition"]}</p>
+        ${item["Size"] ? `<p><strong>Size:</strong> ${item["Size"]}</p>` : ""}
+        ${item["Age"] ? `<p><strong>Age:</strong> ${item["Age"]}</p>` : ""}
+        ${item["Price"] ? (() => {const price = String(item["Price"]).toLowerCase();
+        if (price === "free") return `<p><strong>Price:</strong> Free</p>`;
+        const isNumeric = !isNaN(item["Price"]);
+        const formattedPrice = isNumeric ? `£${Number(item["Price"]).toFixed(2)}` : `£${item["Price"]}`;
+        return `<p><strong>Price:</strong> ${formattedPrice}</p>`;})() : ""}
+        <a href="${contactFormUrl}" class="contact-button" target="_blank" rel="noopener noreferrer">Contact Seller</a>
+      </div>
+    `;
+    container.appendChild(div);
+  });
+}
+
+
+function openFilterModal() {
+  document.getElementById("filterModal").style.display = "flex";
+  document.body.style.overflow = "hidden";
+}
+function closeFilterModal(event) {
+  document.getElementById("filterModal").style.display = "none";
+  document.body.style.overflow = "";
+}
+function applyFilters() {
+  closeFilterModal();
+  renderFilteredListings();
+}
+
+renderFilteredListings();
     } catch (err) {
       console.error("Error loading data:", err);
       document.getElementById("listings").innerHTML = `<p>Failed to load listings.</p>`;
@@ -507,6 +618,52 @@
     document.getElementById("aboutModal").style.display = "none";
     document.body.style.overflow = "";
   }
+</script>
+
+
+<div id="filterModal" class="modal-overlay" onclick="closeFilterModal(event)" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.6); display: none; justify-content: center; align-items: center; z-index: 1000;">
+  <div class="modal-content" onclick="event.stopPropagation()" style="background-color: #fdfbee; padding: 20px; max-width: 600px; width: 90%; border-radius: 10px; position: relative; max-height: 90vh; overflow-y: auto;">
+    <button class="close-modal" onclick="closeFilterModal()" style="position: absolute; top: 10px; right: 15px; background: none; border: none; font-size: 1.5em; cursor: pointer; color: #333;">×</button>
+    <h2>Advanced Filters</h2>
+    <div style="display: flex; flex-direction: column; gap: 15px;">
+      <label>Sort Order:
+        <select id="sortOrder">
+          <option value="newest">Newest</option>
+          <option value="oldest">Oldest</option>
+        </select>
+      </label>
+      <label>Size:
+        <select id="sizeFilter"><option value="">All Sizes</option></select>
+      </label>
+      <label>Age:
+        <select id="ageFilter"><option value="">All Ages</option></select>
+      </label>
+      <label>Condition:
+        <select id="conditionFilter"><option value="">All Conditions</option></select>
+      </label>
+      <label>Max Price: <span id="priceValue">£10</span>
+        <input type="range" id="priceSlider" min="0" max="10" step="0.5" value="10" oninput="document.getElementById('priceValue').innerText='£'+this.value"/>
+      </label>
+      <label><input type="checkbox" id="freeOnlyCheckbox"/> Show Free Only</label>
+      <button class="primary-button" onclick="applyFilters()">Apply Filters</button>
+    </div>
+  </div>
+</div>
+
+
+<script>
+function openFilterModal() {
+  document.getElementById("filterModal").style.display = "flex";
+  document.body.style.overflow = "hidden";
+}
+function closeFilterModal(event) {
+  document.getElementById("filterModal").style.display = "none";
+  document.body.style.overflow = "";
+}
+function applyFilters() {
+  closeFilterModal();
+  renderFilteredListings();
+}
 </script>
 
 </body>
