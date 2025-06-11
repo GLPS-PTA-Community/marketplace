@@ -672,11 +672,9 @@ async function loadListings() {
         : `<p class="price">£${item['Price']}</p>`;
 
       const metaHtml = `
-        <div class="listing-meta">
-          ${item['Age'] ? `<span>Age: ${item['Age']}</span>` : ''}
-          ${item['Size'] ? `<span>Size: ${item['Size']}</span>` : ''}
-          ${item['Condition'] ? `<span>Condition: ${item['Condition']}</span>` : ''}
-        </div>
+        ${item["Size"] ? `<p><strong>Size:</strong> ${item["Size"]}</p>` : ""}
+        ${item["Age"] ? `<p><strong>Age:</strong> ${item["Age"]}</p>` : ""}
+        ${item["Condition"] ? `<p><strong>Condition:</strong> ${item["Condition"]}</p>` : ""}
       `;
 
       card.innerHTML = `
