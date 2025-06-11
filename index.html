@@ -294,6 +294,28 @@
     }
 
 </style>
+
+<style>
+input[type=range] {
+  width: 100%;
+  margin-top: 5px;
+  appearance: none;
+  background: #ddd;
+  height: 6px;
+  border-radius: 4px;
+}
+input[type=range]::-webkit-slider-thumb {
+  appearance: none;
+  height: 20px;
+  width: 20px;
+  background: #f57c00;
+  border-radius: 50%;
+  cursor: pointer;
+  border: 2px solid white;
+  box-shadow: 0 0 2px rgba(0,0,0,0.5);
+}
+</style>
+
 </head>
 <body>
 
@@ -392,6 +414,7 @@
       const categories = [...new Set(listings.map(i => i["Category"]).filter(Boolean))];
       categoryDropdown.innerHTML = `<option value="">All Categories</option>` +
         categories.map(c => `<option value="${c}">${c}</option>`).join('');
+      populateDropdowns(listings);
 
       function renderFilteredListings() {
         const searchValue = searchInput.value.toLowerCase();
@@ -593,7 +616,22 @@ renderFilteredListings();
     lightbox.style.display = "flex";
   }
 
-  loadListings();
+  
+function populateDropdowns(listings) {
+  const sizeDropdown = document.getElementById("sizeFilter");
+  const ageDropdown = document.getElementById("ageFilter");
+  const conditionDropdown = document.getElementById("conditionFilter");
+
+  const sizes = [...new Set(listings.map(i => i["Size"]).filter(Boolean))];
+  const ages = [...new Set(listings.map(i => i["Age"]).filter(Boolean))];
+  const conditions = [...new Set(listings.map(i => i["Condition"]).filter(Boolean))];
+
+  sizeDropdown.innerHTML = '<option value="">All Sizes</option>' + sizes.map(s => `<option value="${s}">${s}</option>`).join('');
+  ageDropdown.innerHTML = '<option value="">All Ages</option>' + ages.map(a => `<option value="${a}">${a}</option>`).join('');
+  conditionDropdown.innerHTML = '<option value="">All Conditions</option>' + conditions.map(c => `<option value="${c}">${c}</option>`).join('');
+}
+
+loadListings();
 </script>
 
 
