@@ -803,6 +803,9 @@ function applyFilters() {
 
 
 
+
+
+
 <script>
 function renderFilteredListings() {
   try {
@@ -859,67 +862,104 @@ function renderFilteredListings() {
     container.innerHTML = "";
 
     filtered.forEach(item => {
-      const div = document.createElement("div");
-      div.className = "item-card";
+      const card = document.createElement("div");
+      card.className = "item-card";
 
       const imageFilename = item["Image Filename"]?.trim();
       const imageUrl = imageFilename
         ? "https://raw.githubusercontent.com/GLPS-PTA-Community/marketplace/main/images/" + encodeURIComponent(imageFilename)
         : null;
 
-      const itemDetails = document.createElement("div");
-      itemDetails.className = "item-details";
+      let imageElement;
+      if (imageUrl) {
+        imageElement = document.createElement("img");
+        imageElement.className = "thumbnail";
+        imageElement.src = imageUrl;
+        imageElement.alt = "Item image";
+        imageElement.addEventListener("click", () => showLightbox(imageUrl));
+      } else {
+        imageElement = document.createElement("div");
+        imageElement.style = "width:120px;height:90px;background:#ddd;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#666;";
+        imageElement.textContent = "No Image";
+      }
 
-      let badgeHTML = "";
+      const details = document.createElement("div");
+      details.className = "item-details";
+
+      const title = document.createElement("div");
+      title.className = "item-title";
+      title.textContent = item["Item Name"] || "";
+
+      // Expiring badge
       if (item["Expiry Date"]) {
         const today = new Date();
         const expiryDate = new Date(item["Expiry Date"]);
         const diffDays = Math.floor((expiryDate - today) / (1000 * 60 * 60 * 24));
         const status = (item["Status"] || "").toLowerCase();
         if (diffDays <= 7 && diffDays > 0 && status !== "expired" && status !== "sold") {
-          badgeHTML = '<span class="badge expiring-soon">Expiring Soon</span>';
+          const badge = document.createElement("span");
+          badge.className = "badge expiring-soon";
+          badge.textContent = "Expiring Soon";
+          title.appendChild(document.createTextNode(" "));
+          title.appendChild(badge);
         }
       }
 
-      const itemName = encodeURIComponent(item["Item Name"] || "");
-      const defaultMessage = encodeURIComponent("Hi, I'm interested in this item. Is it still available please?");
-      const itemId = encodeURIComponent(item["Item ID"] || "");
-      const price = item["Price"] ? (String(item["Price"]).toLowerCase() === "free" ? "Free" : "£" + Number(item["Price"]).toFixed(2)) : "";
+      const description = document.createElement("div");
+      description.className = "item-description";
+      description.textContent = item["Item Description"] || "";
 
-      const contactFormUrl = "https://docs.google.com/forms/d/e/1FAIpQLSd85mhv1hfjrSu4ZmhQi6TZe4kmfVFhAtxrV14vU3Uk-Wkheg/viewform?usp=pp_url&entry.1181883131=" + encodeURIComponent(itemId) +
-        "&entry.1811975642=" + encodeURIComponent(itemName) +
-        "&entry.1847581834=" + encodeURIComponent(price) +
-        "&entry.1513359632=" + defaultMessage;
+      const category = document.createElement("p");
+      category.innerHTML = "<strong>Category:</strong> " + (item["Category"] || "");
 
-      const imgHtml = imageUrl
-        ? "<img class='thumbnail' src='" + imageUrl + "' alt='Item image'>"
-        : "<div style='width:120px;height:90px;background:#ddd;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#666;'>No Image</div>";
+      const condition = document.createElement("p");
+      condition.innerHTML = "<strong>Condition:</strong> " + (item["Condition"] || "");
 
-      div.innerHTML = imgHtml + `
-        <div class='item-details'>
-          <div class='item-title'>${item["Item Name"]} ${badgeHTML}</div>
-          <div class='item-description'>${item["Item Description"]}</div>
-          <p><strong>Category:</strong> ${item["Category"]}</p>
-          <p><strong>Condition:</strong> ${item["Condition"]}</p>
-          ${item["Size"] ? `<p><strong>Size:</strong> ${item["Size"]}</p>` : ""}
-          ${item["Age"] ? `<p><strong>Age:</strong> ${item["Age"]}</p>` : ""}
-          ${item["Price"] ? (() => {
-            const lower = String(item["Price"]).toLowerCase();
-            if (lower === "free") return "<p><strong>Price:</strong> Free</p>";
-            const isNumeric = !isNaN(item["Price"]);
-            const formattedPrice = isNumeric ? `£${Number(item["Price"]).toFixed(2)}` : `£${item["Price"]}`;
-            return `<p><strong>Price:</strong> ${formattedPrice}</p>`;
-          })() : ""}
-          <a href='${contactFormUrl}' class='contact-button' target='_blank' rel='noopener noreferrer'>Contact Seller</a>
-        </div>
-      `;
+      details.appendChild(title);
+      details.appendChild(description);
+      details.appendChild(category);
+      details.appendChild(condition);
 
-      const imgEl = div.querySelector("img.thumbnail");
-      if (imgEl) {
-        imgEl.addEventListener("click", () => showLightbox(imageUrl));
+      if (item["Size"]) {
+        const size = document.createElement("p");
+        size.innerHTML = "<strong>Size:</strong> " + item["Size"];
+        details.appendChild(size);
       }
 
-      container.appendChild(div);
+      if (item["Age"]) {
+        const age = document.createElement("p");
+        age.innerHTML = "<strong>Age:</strong> " + item["Age"];
+        details.appendChild(age);
+      }
+
+      if (item["Price"]) {
+        const price = document.createElement("p");
+        let value = String(item["Price"]).toLowerCase();
+        if (value === "free") {
+          price.innerHTML = "<strong>Price:</strong> Free";
+        } else if (!isNaN(item["Price"])) {
+          price.innerHTML = "<strong>Price:</strong> £" + Number(item["Price"]).toFixed(2);
+        } else {
+          price.innerHTML = "<strong>Price:</strong> £" + item["Price"];
+        }
+        details.appendChild(price);
+      }
+
+      const contactBtn = document.createElement("a");
+      contactBtn.className = "contact-button";
+      contactBtn.href = "https://docs.google.com/forms/d/e/1FAIpQLSd85mhv1hfjrSu4ZmhQi6TZe4kmfVFhAtxrV14vU3Uk-Wkheg/viewform?usp=pp_url" +
+        "&entry.1181883131=" + encodeURIComponent(item["Item ID"] || "") +
+        "&entry.1811975642=" + encodeURIComponent(item["Item Name"] || "") +
+        "&entry.1847581834=" + encodeURIComponent(item["Price"] || "") +
+        "&entry.1513359632=" + encodeURIComponent("Hi, I'm interested in this item. Is it still available please?");
+      contactBtn.textContent = "Contact Seller";
+      contactBtn.target = "_blank";
+      contactBtn.rel = "noopener noreferrer";
+
+      details.appendChild(contactBtn);
+      card.appendChild(imageElement);
+      card.appendChild(details);
+      container.appendChild(card);
     });
   } catch (err) {
     console.error("renderFilteredListings error:", err);
