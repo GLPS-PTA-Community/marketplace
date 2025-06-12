@@ -448,10 +448,10 @@
             }
           }
 
-          const itemName = encodeURIComponent(item["Item Name"] || "");
+          const itemName = (item["Item Name"] || "").replace(/ /g, " ");
           const defaultMessage = encodeURIComponent("Hi, I'm interested in this item. Is it still available please?");
           const itemId = encodeURIComponent(item["Item ID"] || "");
-          const price = item["Price"] ? (String(item["Price"]).toLowerCase() === "free" ? "Free" : "£" + Number(item["Price"]).toFixed(2)) : "";
+          const price = item["Price"] !== undefined && item["Price"] !== "" ? "£" + Number(item["Price"]).toFixed(2) : "";
 
           const contactFormUrl = `https://docs.google.com/forms/d/e/1FAIpQLSd85mhv1hfjrSu4ZmhQi6TZe4kmfVFhAtxrV14vU3Uk-Wkheg/viewform?usp=pp_url&entry.1181883131=${encodeURIComponent(itemId)}&entry.1811975642=${encodeURIComponent(itemName)}&entry.1847581834=${encodeURIComponent(price)}&entry.1513359632=${defaultMessage}`;
 
@@ -476,7 +476,7 @@
               <p><strong>Condition:</strong> ${item["Condition"]}</p>
               ${item["Size"] ? `<p><strong>Size:</strong> ${item["Size"]}</p>` : ""}
 ${item["Age"] ? `<p><strong>Age:</strong> ${item["Age"]}</p>` : ""}
-              ${item["Price"] !== undefined && item["Price"] !== "" ? `<p><strong>Price:</strong> £${parseFloat(item["Price"]).toFixed(2)}</p>` : ""}
+              ${item["Price"] !== undefined && item["Price"] !== "" ? `<p><strong>Price:</strong> £${Number(item["Price"]).toFixed(2)}</p>` : ""}
               <a href="${contactFormUrl}" class="contact-button" target="_blank" rel="noopener noreferrer">Contact Seller</a>
             </div>
           `;
