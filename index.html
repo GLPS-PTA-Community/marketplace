@@ -476,7 +476,7 @@
               <p><strong>Condition:</strong> ${item["Condition"]}</p>
               ${item["Size"] ? `<p><strong>Size:</strong> ${item["Size"]}</p>` : ""}
 ${item["Age"] ? `<p><strong>Age:</strong> ${item["Age"]}</p>` : ""}
-              ${item["Price"] ? `<p><strong>Price:</strong> £${parseFloat(item["Price"]).toFixed(2)}</p>` : ""}
+              ${item["Price"] !== undefined && item["Price"] !== "" ? `<p><strong>Price:</strong> £${parseFloat(item["Price"]).toFixed(2)}</p>` : ""}
               <a href="${contactFormUrl}" class="contact-button" target="_blank" rel="noopener noreferrer">Contact Seller</a>
             </div>
           `;
