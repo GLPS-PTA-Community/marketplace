@@ -471,12 +471,15 @@ label[for="freeOnlyToggle"] {
 }
 
 /* Dropdown styling with iOS/Safari override */
+
 select {
   -webkit-appearance: none;
   -moz-appearance: none;
   appearance: none;
   background-color: #f2f2f2;
-  color: #000;
+  color: #000 !important;
+  font-family: system-ui, sans-serif;
+  font-weight: 500;
   border: 1px solid #ccc;
   padding: 6px;
   border-radius: 4px;
