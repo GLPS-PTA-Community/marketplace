@@ -317,10 +317,12 @@
 </div>
 <div class="controls">
 <input id="searchInput" placeholder="Search by item name..." type="text"/>
+<select aria-label="Filter by age" id="ageFilter">
+<option value="">All Ages</option>
+</select>
 <select aria-label="Filter by size" id="sizeFilter">
 <option value="">All Sizes</option>
 </select>
-
 <select aria-label="Filter by category" id="categoryFilter">
 <option value="">All Categories</option>
 </select>
@@ -382,9 +384,13 @@
 
       const categories = [...new Set(listings.map(i => i["Category"]).filter(Boolean))];
       const sizes = [...new Set(listings.map(i => i["Size"]).filter(Boolean))];
+      const ages = [...new Set(listings.map(i => i["Age"]).filter(Boolean))];
       categoryDropdown.innerHTML = `<option value="">All Categories</option>` +
         categories.map(c => `<option value="${c}">${c}</option>`).join('');
       document.getElementById("sizeFilter").innerHTML = `<option value="">All Sizes</option>` +
+        sizes.map(s => `<option value="${s}">${s}</option>`).join('');
+      document.getElementById("ageFilter").innerHTML = `<option value="">All Ages</option>` +
+        ages.map(a => `<option value="${a}">${a}</option>`).join('');
         sizes.map(s => `<option value="${s}">${s}</option>`).join('');
     
         categories.map(c => `<option value="${c}">${c}</option>`).join('');
@@ -394,12 +400,16 @@
         const selectedCategory = categoryDropdown.value;
         const sort = sortOrder.value;
         const selectedSize = document.getElementById("sizeFilter").value;
+        const selectedAge = document.getElementById("ageFilter").value;
+        console.log("Selected Age Filter:", selectedAge);
 
         let filtered = listings.filter(item => {
           const matchesSearch = item["Item Name"].toLowerCase().includes(searchValue);
           const matchesCategory = !selectedCategory || item["Category"] === selectedCategory;
           const matchesSize = !selectedSize || item["Size"] === selectedSize;
-          return matchesSearch && matchesCategory && matchesSize;
+          const matchesAge = selectedAge === "" ? true :
+          (item["Age"] && String(item["Age"]).toLowerCase().includes(selectedAge.toLowerCase()));
+          return matchesSearch && matchesCategory && matchesSize && matchesAge;
         });
 
         filtered.sort((a, b) => {
@@ -467,6 +477,7 @@ ${item["Age"] ? `<p><strong>Age:</strong> ${item["Age"]}</p>` : ""}
       categoryDropdown.addEventListener("change", renderFilteredListings);
       sortOrder.addEventListener("change", renderFilteredListings);
       document.getElementById("sizeFilter").addEventListener("change", renderFilteredListings);
+      document.getElementById("ageFilter").addEventListener("change", renderFilteredListings);
 
       renderFilteredListings();
     } catch (err) {
