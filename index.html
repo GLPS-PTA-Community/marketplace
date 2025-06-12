@@ -323,7 +323,6 @@
 <select aria-label="Filter by condition" id="conditionFilter">
 <option value="">All Conditions</option>
 </select>
-
 <select aria-label="Filter by size" id="sizeFilter">
 <option value="">All Sizes</option>
 </select>
@@ -334,6 +333,10 @@
 <option value="newest">Sort by: Newest</option>
 <option value="oldest">Sort by: Oldest</option>
 </select>
+<label style="display:inline-flex; align-items:center; gap:6px; margin-left: 10px;">
+<input id="freeOnlyToggle" type="checkbox"/>
+      Free only
+    </label>
 </div>
 <div id="listings">
 <!-- Skeleton loaders -->
@@ -410,6 +413,7 @@
         const selectedSize = document.getElementById("sizeFilter").value;
         const selectedAge = document.getElementById("ageFilter").value;
         const selectedCondition = document.getElementById("conditionFilter").value;
+        const freeOnly = document.getElementById("freeOnlyToggle").checked;
         console.log("Selected Age Filter:", selectedAge);
 
         let filtered = listings.filter(item => {
@@ -419,7 +423,8 @@
           const matchesAge = selectedAge === "" ? true :
           (item["Age"] && String(item["Age"]).toLowerCase().includes(selectedAge.toLowerCase()));
           const matchesCondition = !selectedCondition || item["Condition"] === selectedCondition;
-          return matchesSearch && matchesCategory && matchesSize && matchesAge && matchesCondition;
+          const matchesFree = !freeOnly || (parseFloat(item["Price"]) === 0);
+          return matchesSearch && matchesCategory && matchesSize && matchesAge && matchesCondition && matchesFree;
         });
 
         filtered.sort((a, b) => {
@@ -489,6 +494,7 @@ ${item["Age"] ? `<p><strong>Age:</strong> ${item["Age"]}</p>` : ""}
       document.getElementById("sizeFilter").addEventListener("change", renderFilteredListings);
       document.getElementById("ageFilter").addEventListener("change", renderFilteredListings);
       document.getElementById("conditionFilter").addEventListener("change", renderFilteredListings);
+      document.getElementById("freeOnlyToggle").addEventListener("change", renderFilteredListings);
 
       renderFilteredListings();
     } catch (err) {
