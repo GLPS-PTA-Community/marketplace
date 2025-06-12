@@ -457,6 +457,35 @@ label[for="freeOnlyToggle"] {
 .checkbox-group input[type="checkbox"] {
   transform: scale(1.2);
 }
+
+/* Dropdown styling for clarity and accessibility */
+  background-color: #f2f2f2;
+  color: #000;
+  border: 1px solid #ccc;
+  padding: 6px;
+  border-radius: 4px;
+  font-size: 14px;
+}
+  outline: 2px solid #f58220;
+  background-color: #eaeaea;
+}
+
+/* Dropdown styling with iOS/Safari override */
+select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-color: #f2f2f2;
+  color: #000;
+  border: 1px solid #ccc;
+  padding: 6px;
+  border-radius: 4px;
+  font-size: 14px;
+}
+select:focus {
+  outline: 2px solid #f58220;
+  background-color: #eaeaea;
+}
 </style>
 </head>
 <body>
@@ -496,14 +525,12 @@ label[for="freeOnlyToggle"] {
 <option value="newest">Sort by: Newest</option>
 <option value="oldest">Sort by: Oldest</option>
 </select>
-
 <select id="minPriceFilter">
 <option value="">Min Price</option><option value="£0.00">£0.00</option><option value="£0.50">£0.50</option><option value="£1.00">£1.00</option><option value="£1.50">£1.50</option><option value="£2.00">£2.00</option><option value="£2.50">£2.50</option><option value="£3.00">£3.00</option><option value="£3.50">£3.50</option><option value="£4.00">£4.00</option><option value="£4.50">£4.50</option><option value="£5.00">£5.00</option><option value="£5.50">£5.50</option><option value="£6.00">£6.00</option><option value="£6.50">£6.50</option><option value="£7.00">£7.00</option><option value="£7.50">£7.50</option><option value="£8.00">£8.00</option><option value="£8.50">£8.50</option><option value="£9.00">£9.00</option><option value="£9.50">£9.50</option><option value="£10.00">£10.00</option>
 </select>
 <select id="maxPriceFilter">
 <option value="">Max Price</option><option value="£0.00">£0.00</option><option value="£0.50">£0.50</option><option value="£1.00">£1.00</option><option value="£1.50">£1.50</option><option value="£2.00">£2.00</option><option value="£2.50">£2.50</option><option value="£3.00">£3.00</option><option value="£3.50">£3.50</option><option value="£4.00">£4.00</option><option value="£4.50">£4.50</option><option value="£5.00">£5.00</option><option value="£5.50">£5.50</option><option value="£6.00">£6.00</option><option value="£6.50">£6.50</option><option value="£7.00">£7.00</option><option value="£7.50">£7.50</option><option value="£8.00">£8.00</option><option value="£8.50">£8.50</option><option value="£9.00">£9.00</option><option value="£9.50">£9.50</option><option value="£10.00">£10.00</option>
 </select>
-
 <div class="checkbox-group">
 <input id="freeOnlyToggle" type="checkbox"/>
 <label for="freeOnlyToggle">Free only</label>
