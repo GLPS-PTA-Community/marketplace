@@ -1,11 +1,12 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/GLPS-PTA-Community/marketplace/main/images/pta-logo.png">
-  <title>Community Marketplace</title>
-  <style>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://raw.githubusercontent.com/GLPS-PTA-Community/marketplace/main/images/pta-logo.png" rel="icon" type="image/png"/>
+<title>Community Marketplace</title>
+<style>
     /* Background wrapper to contain main content and apply background */
     .background-wrapper {
       background-color: #fdfbee;
@@ -296,85 +297,75 @@
 </style>
 </head>
 <body>
-
-  <div class="background-wrapper">
-    <div class="main-wrapper">
-
-      <div class="header-box">
-        <img src="https://raw.githubusercontent.com/GLPS-PTA-Community/marketplace/main/images/pta-logo.png" alt="PTA Logo" />
-        <h1>Community Marketplace</h1>
-        <div class="subheading">Brought to you by the GLPS PTA</div>
-        <div class="tagline">A community space to give, buy, sell and promote the reuse of pre-loved uniform and items</div>
-      </div>
-
-      
-    <div style="text-align: center; margin-bottom: 20px;">
-      <div class="add-button" style="display: inline-block; margin-right: 10px;">
-    
-        <a class="primary-button" href="https://docs.google.com/forms/d/e/1FAIpQLSeMm3omCNgUCGx_sx6NMYikU_JO8kWU_5S9fj2G9HG8n8DUUw/viewform" target="_blank" rel="noopener noreferrer">
+<div class="background-wrapper">
+<div class="main-wrapper">
+<div class="header-box">
+<img alt="PTA Logo" src="https://raw.githubusercontent.com/GLPS-PTA-Community/marketplace/main/images/pta-logo.png"/>
+<h1>Community Marketplace</h1>
+<div class="subheading">Brought to you by the GLPS PTA</div>
+<div class="tagline">A community space to give, buy, sell and promote the reuse of pre-loved uniform and items</div>
+</div>
+<div style="text-align: center; margin-bottom: 20px;">
+<div class="add-button" style="display: inline-block; margin-right: 10px;">
+<a class="primary-button" href="https://docs.google.com/forms/d/e/1FAIpQLSeMm3omCNgUCGx_sx6NMYikU_JO8kWU_5S9fj2G9HG8n8DUUw/viewform" rel="noopener noreferrer" target="_blank">
           Add new listing
         </a>
-      
-      </div>
-      <div class="about-button" style="display: inline-block;">
-        <button class="primary-button orange" onclick="openModal()">About</button>
-      </div>
-    </div>
+</div>
+<div class="about-button" style="display: inline-block;">
+<button class="primary-button orange" onclick="openModal()">About</button>
+</div>
+</div>
+<div class="controls">
+<input id="searchInput" placeholder="Search by item name..." type="text"/>
+<select aria-label="Filter by size" id="sizeFilter">
+<option value="">All Sizes</option>
+</select>
 
-    <div class="controls">
-    
-        <input type="text" id="searchInput" placeholder="Search by item name..." />
-        <select id="categoryFilter" aria-label="Filter by category">
-          <option value="">All Categories</option>
-        </select>
-        <select id="sortOrder" aria-label="Sort order">
-          <option value="newest">Sort by: Newest</option>
-          <option value="oldest">Sort by: Oldest</option>
-        </select>
-      </div>
-
-      <div id="listings">
-        <!-- Skeleton loaders -->
-        <div class="skeleton-card">
-          <div class="skeleton-thumbnail"></div>
-          <div class="skeleton-text">
-            <div class="skeleton-line" style="width: 60%;"></div>
-            <div class="skeleton-line" style="width: 80%;"></div>
-            <div class="skeleton-line" style="width: 40%;"></div>
-          </div>
-        </div>
-        <div class="skeleton-card">
-          <div class="skeleton-thumbnail"></div>
-          <div class="skeleton-text">
-            <div class="skeleton-line" style="width: 70%;"></div>
-            <div class="skeleton-line" style="width: 90%;"></div>
-            <div class="skeleton-line" style="width: 50%;"></div>
-          </div>
-        </div>
-      </div>
-
-      <div id="lightbox" onclick="this.style.display='none'">
-        <img id="lightbox-img" src="" alt="Enlarged preview" />
-      </div>
-
-      <div style="margin-top: 40px; text-align: center; font-size: 14px; color: #666;">
-        <p>
-          <strong>Disclaimer:</strong> The PTA Community Marketplace only facilitates the initial contact between buyers and sellers. All further communication and transactions are the responsibility of the participants. The PTA is not liable for any outcomes resulting from these interactions.
+<select aria-label="Filter by category" id="categoryFilter">
+<option value="">All Categories</option>
+</select>
+<select aria-label="Sort order" id="sortOrder">
+<option value="newest">Sort by: Newest</option>
+<option value="oldest">Sort by: Oldest</option>
+</select>
+</div>
+<div id="listings">
+<!-- Skeleton loaders -->
+<div class="skeleton-card">
+<div class="skeleton-thumbnail"></div>
+<div class="skeleton-text">
+<div class="skeleton-line" style="width: 60%;"></div>
+<div class="skeleton-line" style="width: 80%;"></div>
+<div class="skeleton-line" style="width: 40%;"></div>
+</div>
+</div>
+<div class="skeleton-card">
+<div class="skeleton-thumbnail"></div>
+<div class="skeleton-text">
+<div class="skeleton-line" style="width: 70%;"></div>
+<div class="skeleton-line" style="width: 90%;"></div>
+<div class="skeleton-line" style="width: 50%;"></div>
+</div>
+</div>
+</div>
+<div id="lightbox" onclick="this.style.display='none'">
+<img alt="Enlarged preview" id="lightbox-img" src=""/>
+</div>
+<div style="margin-top: 40px; text-align: center; font-size: 14px; color: #666;">
+<p>
+<strong>Disclaimer:</strong> The PTA Community Marketplace only facilitates the initial contact between buyers and sellers. All further communication and transactions are the responsibility of the participants. The PTA is not liable for any outcomes resulting from these interactions.
         </p>
-        <p>
+<p>
           If you have any questions, please contact us at <a href="mailto:PTA@greatlinfordprimaryschool.co.uk"> PTA@greatlinfordprimaryschool.co.uk</a>.
         </p>
-      </div>
-
-      <footer>
-      <div style="text-align: center; margin-top: 40px; font-size: 0.9em; color: #666;">
+</div>
+<footer>
+<div style="text-align: center; margin-top: 40px; font-size: 0.9em; color: #666;">
         This marketplace is managed by the Great Linford Primary School PTA. 2025
       </div>
-    </footer>
-      
-    </div>
-  </div>
-
+</footer>
+</div>
+</div>
 <script>
   const endpoint = "https://script.google.com/macros/s/AKfycby3uB_X3yr3sKGrugo8KTh9_FQezJN28wRhU1lmKYZBY5jj43EOXazsQ_LWrbtEUYPb/exec";
 
@@ -390,18 +381,25 @@
       const searchInput = document.getElementById("searchInput");
 
       const categories = [...new Set(listings.map(i => i["Category"]).filter(Boolean))];
+      const sizes = [...new Set(listings.map(i => i["Size"]).filter(Boolean))];
       categoryDropdown.innerHTML = `<option value="">All Categories</option>` +
+        categories.map(c => `<option value="${c}">${c}</option>`).join('');
+      document.getElementById("sizeFilter").innerHTML = `<option value="">All Sizes</option>` +
+        sizes.map(s => `<option value="${s}">${s}</option>`).join('');
+    
         categories.map(c => `<option value="${c}">${c}</option>`).join('');
 
       function renderFilteredListings() {
         const searchValue = searchInput.value.toLowerCase();
         const selectedCategory = categoryDropdown.value;
         const sort = sortOrder.value;
+        const selectedSize = document.getElementById("sizeFilter").value;
 
         let filtered = listings.filter(item => {
           const matchesSearch = item["Item Name"].toLowerCase().includes(searchValue);
           const matchesCategory = !selectedCategory || item["Category"] === selectedCategory;
-          return matchesSearch && matchesCategory;
+          const matchesSize = !selectedSize || item["Size"] === selectedSize;
+          return matchesSearch && matchesCategory && matchesSize;
         });
 
         filtered.sort((a, b) => {
@@ -468,6 +466,7 @@ ${item["Age"] ? `<p><strong>Age:</strong> ${item["Age"]}</p>` : ""}
       searchInput.addEventListener("input", renderFilteredListings);
       categoryDropdown.addEventListener("change", renderFilteredListings);
       sortOrder.addEventListener("change", renderFilteredListings);
+      document.getElementById("sizeFilter").addEventListener("change", renderFilteredListings);
 
       renderFilteredListings();
     } catch (err) {
@@ -485,19 +484,17 @@ ${item["Age"] ? `<p><strong>Age:</strong> ${item["Age"]}</p>` : ""}
 
   loadListings();
 </script>
-
-
-<div id="aboutModal" class="modal-overlay" onclick="closeModal(event)" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.6); display: none; justify-content: center; align-items: center; z-index: 1000;">
-  <div class="modal-content" onclick="event.stopPropagation()" style="background-color: #fdfbee; padding: 20px; max-width: 600px; width: 90%; border-radius: 10px; position: relative; max-height: 90vh; overflow-y: auto;">
-    <button class="close-modal" onclick="closeModal()" style="position: absolute; top: 10px; right: 15px; background: none; border: none; font-size: 1.5em; cursor: pointer; color: #333;">×</button>
-    <h2>About the Community Marketplace</h2>
-    <p>The Community Marketplace is a platform run by the GLPS PTA to help families give away, sell, or buy school-related items such as uniforms, books, toys, and sports equipment.</p>
-    <p>Seller email addresses are only shared when a buyer submits a contact request. After that, it's up to the seller to respond and handle all communication. The PTA does not get involved in any contact beyond that point.</p>
-    <p>We do not participate in, manage, or profit from any financial transactions. All responsibility for communication and exchanges lies with the individuals involved.</p>
-    <p>Listings remain live for 30 days. A reminder will be sent 7 days before expiry to renew the listing. If not renewed or marked as sold, the listing will be removed, and any associated images will be permanently deleted. It is the seller’s responsibility to mark items as sold in a timely manner.</p>
-    <p>Please use the site respectfully, and feel free to share your feedback at: <a href="mailto:pta@greatlinfordprimaryschool.co.uk">pta@greatlinfordprimaryschool.co.uk</a></p>
-    <p>— GLPS PTA Team</p>
-  </div>
+<div class="modal-overlay" id="aboutModal" onclick="closeModal(event)" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.6); display: none; justify-content: center; align-items: center; z-index: 1000;">
+<div class="modal-content" onclick="event.stopPropagation()" style="background-color: #fdfbee; padding: 20px; max-width: 600px; width: 90%; border-radius: 10px; position: relative; max-height: 90vh; overflow-y: auto;">
+<button class="close-modal" onclick="closeModal()" style="position: absolute; top: 10px; right: 15px; background: none; border: none; font-size: 1.5em; cursor: pointer; color: #333;">×</button>
+<h2>About the Community Marketplace</h2>
+<p>The Community Marketplace is a platform run by the GLPS PTA to help families give away, sell, or buy school-related items such as uniforms, books, toys, and sports equipment.</p>
+<p>Seller email addresses are only shared when a buyer submits a contact request. After that, it's up to the seller to respond and handle all communication. The PTA does not get involved in any contact beyond that point.</p>
+<p>We do not participate in, manage, or profit from any financial transactions. All responsibility for communication and exchanges lies with the individuals involved.</p>
+<p>Listings remain live for 30 days. A reminder will be sent 7 days before expiry to renew the listing. If not renewed or marked as sold, the listing will be removed, and any associated images will be permanently deleted. It is the seller’s responsibility to mark items as sold in a timely manner.</p>
+<p>Please use the site respectfully, and feel free to share your feedback at: <a href="mailto:pta@greatlinfordprimaryschool.co.uk">pta@greatlinfordprimaryschool.co.uk</a></p>
+<p>— GLPS PTA Team</p>
+</div>
 </div>
 <script>
   function openModal() {
@@ -509,6 +506,5 @@ ${item["Age"] ? `<p><strong>Age:</strong> ${item["Age"]}</p>` : ""}
     document.body.style.overflow = "";
   }
 </script>
-
 </body>
 </html>
