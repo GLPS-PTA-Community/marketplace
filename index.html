@@ -687,7 +687,9 @@ async function loadListings() {
             ${item["Size"] ? `<p><strong>Size:</strong> ${item["Size"]}</p>` : ""}
             ${item["Age"] ? `<p><strong>Age:</strong> ${item["Age"]}</p>` : ""}
             ${displayPrice ? `<p><strong>Price:</strong> ${displayPrice}</p>` : ""}
-          </div>
+          
+<a class="contact-button" href="https://docs.google.com/forms/d/e/1FAIpQLSd85mhv1hfjrSu4ZmhQi6TZe4kmfVFhAtxrV14vU3Uk-Wkheg/viewform?usp=pp_url&entry.1181883131=GLPS2025&entry.1811975642=${encodeURIComponent(item["Item Name"])}&entry.1847581834=${encodeURIComponent(displayPrice)}&entry.1513359632=Hi,+I'm+interested+in+this+item.+Is+it+still+available+please?" target="_blank" rel="noopener noreferrer">Contact Seller</a>
+</div>
         `;
         container.appendChild(div);
       });
