@@ -664,6 +664,18 @@ async function loadListings() {
       container.innerHTML = "";
 
       filtered.forEach(item => {
+
+        let expiringSoonBadge = "";
+        if (item["Expiry Date"]) {
+          const expiryDate = new Date(item["Expiry Date"]);
+          const now = new Date();
+          const timeDiff = expiryDate - now;
+          const daysUntilExpiry = timeDiff / (1000 * 60 * 60 * 24);
+          if (daysUntilExpiry <= 7 && daysUntilExpiry >= 0) {
+            expiringSoonBadge = `<span class="badge expiring-soon">Expiring Soon</span>`;
+          }
+        }
+
         const priceStr = String(item["Price"] ?? "").trim();
         const price = parseFloat(priceStr.replace("£", ""));
         const displayPrice = !isNaN(price) ? `£${price.toFixed(2)}` : "";
@@ -680,7 +692,7 @@ async function loadListings() {
           ${imageUrl ? `<img class="thumbnail" src="${imageUrl}" alt="Item image" onclick="showLightbox('${imageUrl}')"/>` :
             `<div style='width:120px;height:90px;background:#ddd;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#666;'>No Image</div>`}
           <div class="item-details">
-            <div class="item-title">${item["Item Name"]}</div>
+            <div class="item-title">${item["Item Name"]} ${expiringSoonBadge}</div>
             <div class="item-description">${item["Item Description"]}</div>
             <p><strong>Category:</strong> ${item["Category"]}</p>
             <p><strong>Condition:</strong> ${item["Condition"]}</p>
