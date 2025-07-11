@@ -211,6 +211,17 @@
       font-size: 0.9em;
     }
 
+    .quantity-info {
+      font-size: 0.9em;
+      margin-top: 4px;
+      color: #333;
+      background-color: #e0f3d1;
+      padding: 2px 6px;
+      border-radius: 4px;
+      display: inline-block;
+      margin-left: 8px;
+    }
+
     @media (max-width: 600px) {
       .background-wrapper {
         padding: 10px;
@@ -688,6 +699,12 @@ async function loadListings() {
           }
         }
 
+        const quantity = item["Quantity"];
+            const quantityDisplay = quantity && parseInt(quantity) > 1
+              ? `<div class="quantity-info">${quantity} available</div>`
+              : "";
+  
+
         const priceStr = String(item["Price"] ?? "").trim();
         const price = parseFloat(priceStr.replace("£", ""));
         const displayPrice = !isNaN(price) ? `£${price.toFixed(2)}` : "";
@@ -704,7 +721,11 @@ async function loadListings() {
           ${imageUrl ? `<img class="thumbnail" src="${imageUrl}" alt="Item image" onclick="showLightbox('${imageUrl}')"/>` :
             `<div style='width:120px;height:90px;background:#ddd;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#666;'>No Image</div>`}
           <div class="item-details">
-            <div class="item-title">${item["Item Name"]} ${expiringSoonBadge}</div>
+            <div class="item-title">
+              ${item["Item Name"]} ${expiringSoonBadge}
+              ${quantityDisplay}
+            </div>
+
             <div class="item-description">${item["Item Description"]}</div>
             <p><strong>Category:</strong> ${item["Category"]}</p>
             <p><strong>Condition:</strong> ${item["Condition"]}</p>
