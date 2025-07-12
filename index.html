@@ -690,14 +690,12 @@ async function loadListings() {
       });
 
       container.innerHTML = "";
-        
-        filtered.forEach(item => {
-          const contacted = item["Contacted"];
-          const contactedBadge = contacted === "Yes"
-            ? `<span class="badge contacted-flag">Someone's interested</span>`
-            : "";
-
+    
       filtered.forEach(item => {
+          const contacted = item["Contacted"];
+        const contactedBadge = contacted === "Yes"
+          ? `<span class="badge contacted-flag">Someone's interested</span>`
+          : "";
 
         let expiringSoonBadge = "";
         if (item["Expiry Date"]) {
