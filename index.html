@@ -147,7 +147,12 @@
       align-items: center;
       gap: 10px;
     }
-
+    .item-title-block {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 12px; /* creates clean spacing before the description */
+    }
+    
     .item-description {
       margin-bottom: 15px;
       color: #555;
@@ -207,14 +212,14 @@
       font-size: 0.9em;
     }
 
-        .quantity-info {
+    .quantity-info {
       font-size: 0.9em;
       background-color: #e0f3d1;
       color: #333;
       padding: 2px 6px;
       border-radius: 4px;
-      margin: 6px 0 10px 0;
       display: inline-block;
+      margin-top: 4px;
     }
 
     .badge.contacted-flag {
@@ -730,10 +735,12 @@ async function loadListings() {
           ${imageUrl ? `<img class="thumbnail" src="${imageUrl}" alt="Item image" onclick="showLightbox('${imageUrl}')"/>` :
             `<div style='width:120px;height:90px;background:#ddd;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#666;'>No Image</div>`}
           <div class="item-details">
-            <div class="item-title">
-          ${item["Item Name"]} ${expiringSoonBadge} ${contactedBadge}
+            <div class="item-title-block">
+              <div class="item-title">
+                ${item["Item Name"]} ${expiringSoonBadge} ${contactedBadge}
+              </div>
+              ${quantityDisplay}
             </div>
-            ${quantityDisplay}
 
             <div class="item-description">${item["Item Description"]}</div>
             <p><strong>Category:</strong> ${item["Category"]}</p>
