@@ -691,6 +691,16 @@ async function loadListings() {
 
       container.innerHTML = "";
 
+        const container = document.getElementById("listings");
+// other consts...
+        container.innerHTML = "";
+        
+        filtered.forEach(item => {
+          const contacted = item["Contacted"];
+          const contactedBadge = contacted === "Yes"
+            ? `<span class="badge contacted-flag">Someone's interested</span>`
+            : "";
+
       filtered.forEach(item => {
 
         let expiringSoonBadge = "";
@@ -727,9 +737,9 @@ async function loadListings() {
             `<div style='width:120px;height:90px;background:#ddd;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#666;'>No Image</div>`}
           <div class="item-details">
             <div class="item-title">
-              ${item["Item Name"]} ${expiringSoonBadge}
-              ${quantityDisplay}
+          ${item["Item Name"]} ${expiringSoonBadge} ${contactedBadge}
             </div>
+            ${quantityDisplay}
 
             <div class="item-description">${item["Item Description"]}</div>
             <p><strong>Category:</strong> ${item["Category"]}</p>
