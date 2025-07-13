@@ -284,6 +284,16 @@
         padding: 8px 15px;
         font-size: 0.9em;
       }
+      .badge.pta-flag {
+        background-color: #4caf50;
+        color: white;
+        padding: 3px 8px;
+        border-radius: 4px;
+        font-weight: bold;
+        font-size: 0.9em;
+        margin-left: 6px;
+      }
+
       .badge.expiring-soon {
         font-size: 0.8em;
         padding: 2px 6px;
@@ -731,6 +741,9 @@ async function loadListings() {
           ? `<span class="badge contacted-flag">Someone's interested</span>`
           : "";
 
+        const isPTA = item["Item Description"] && item["Item Description"].startsWith("PTA");
+        const ptaBadge = isPTA ? `<span class="badge pta-flag">PTA</span>` : "";
+
         let expiringSoonBadge = "";
         if (item["Expiry Date"]) {
           const expiryDate = new Date(item["Expiry Date"]);
@@ -769,7 +782,7 @@ async function loadListings() {
           <div class="item-details">
             <div class="item-title-block">
             <div class="item-title">
-              ${item["Item Name"]} ${expiringSoonBadge} ${contactedBadge} ${soldOutBadge}
+            ${item["Item Name"]} ${ptaBadge} ${expiringSoonBadge} ${contactedBadge} ${soldOutBadge}
             </div>
                 ${quantityDisplay}
             </div>
