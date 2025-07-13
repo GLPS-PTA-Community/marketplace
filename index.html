@@ -536,6 +536,34 @@ select:focus {
   outline: 2px solid #007AFF;
   background-color: #eaeaea;
 }
+
+/* Hide by default */
+.modal.hidden {
+  display: none;
+}
+
+/* Fullscreen overlay modal */
+#contactModal {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 9999;
+}
+    
+/* Inner box styling */
+#contactModal .modal-content {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  max-width: 500px;
+  width: 90%;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  z-index: 10000;
+  position: relative;
+}
 </style>
 </head>
 <body>
