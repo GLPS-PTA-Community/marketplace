@@ -567,6 +567,11 @@ select:focus {
 <select id="maxPriceFilter">
 <option value="">Max Price</option><option value="£0.00">£0.00</option><option value="£0.50">£0.50</option><option value="£1.00">£1.00</option><option value="£1.50">£1.50</option><option value="£2.00">£2.00</option><option value="£2.50">£2.50</option><option value="£3.00">£3.00</option><option value="£3.50">£3.50</option><option value="£4.00">£4.00</option><option value="£4.50">£4.50</option><option value="£5.00">£5.00</option><option value="£5.50">£5.50</option><option value="£6.00">£6.00</option><option value="£6.50">£6.50</option><option value="£7.00">£7.00</option><option value="£7.50">£7.50</option><option value="£8.00">£8.00</option><option value="£8.50">£8.50</option><option value="£9.00">£9.00</option><option value="£9.50">£9.50</option><option value="£10.00">£10.00</option>
 </select>
+<select aria-label="Filter by branding" id="brandingFilter">
+  <option value="">All Types</option>
+  <option value="Branded">Branded</option>
+  <option value="Unbranded">Unbranded</option>
+</select>
 
 <div class="checkbox-group">
   <input id="expiringSoonToggle" type="checkbox"/>
@@ -670,6 +675,10 @@ async function loadListings() {
       const size = sizeDropdown.value;
       const age = ageDropdown.value;
       const condition = conditionDropdown.value;
+      const matchesBranding =
+      !branding ||
+      (branding === "Branded" && item["Branded?"] === "Yes") ||
+      (branding === "Unbranded" && item["Branded?"] === "No");
       const sort = document.getElementById("sortOrder").value;
       const freeOnly = document.getElementById("freeOnlyToggle").checked;
       const expiringSoonOnly = document.getElementById("expiringSoonToggle").checked;
@@ -682,11 +691,11 @@ async function loadListings() {
         const expiryDate = hasExpiryDate ? new Date(item["Expiry Date"]) : null;
         const daysUntilExpiry = expiryDate ? (expiryDate - new Date()) / (1000 * 60 * 60 * 24) : null;
         const matchesExpiringSoon = !expiringSoonOnly || (expiryDate && daysUntilExpiry <= 7 && daysUntilExpiry >= 0);
-
+        const matchesBranding = !branding || item["Branded?"] === branding;
+        return matchesSearch && matchesCategory && matchesSize && matchesAge && matchesCondition && matchesFree && matchesPriceRange && matchesExpiringSoon && matchesBranding;
         const itemName = item["Item Name"] || "";
         const itemPriceStr = String(item["Price"] ?? "").trim();
         const itemPrice = parseFloat(itemPriceStr.replace("£", ""));
-
         const matchesSearch = itemName.toLowerCase().includes(search);
         const matchesCategory = !category || item["Category"] === category;
         const matchesSize = !size || item["Size"] === size;
@@ -783,6 +792,7 @@ async function loadListings() {
     document.getElementById("minPriceFilter").addEventListener("change", renderFilteredListings);
     document.getElementById("maxPriceFilter").addEventListener("change", renderFilteredListings);
     document.getElementById("expiringSoonToggle").addEventListener("change", renderFilteredListings);
+    document.getElementById("brandingFilter").addEventListener("change", renderFilteredListings);
 
     renderFilteredListings();
 
