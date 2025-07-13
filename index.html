@@ -740,10 +740,12 @@ async function loadListings() {
       container.innerHTML = "";
     
       filtered.forEach(item => {
-          const contacted = item["Contacted"];
-          const contactedBadge = contacted === "Yes" && quantity > 0
-          ? `<span class="badge contacted-flag">Someone's interested</span>`
-          : "";
+        const quantity = parseInt(item["Quantity"]);
+        const isSoldOut = !isNaN(quantity) && quantity === 0;
+        const contacted = item["Contacted"];
+        const contactedBadge = contacted === "Yes" && quantity > 0
+        ? `<span class="badge contacted-flag">Someone's interested</span>`
+        : "";
 
         const isPTA = item["Item Description"] && item["Item Description"].startsWith("PTA");
         const ptaBadge = isPTA ? `<span class="badge pta-flag">PTA</span>` : "";
@@ -759,11 +761,10 @@ async function loadListings() {
           }
         }
 
-        const quantity = parseInt(item["Quantity"]);
         const quantityDisplay = !isNaN(quantity) && quantity > 1
           ? `<div class="quantity-info">${quantity} available</div>`
           : "";
-        const isSoldOut = !isNaN(quantity) && quantity === 0;
+          
         const soldOutBadge = isSoldOut
           ? `<span class="badge sold-out">Sold Out</span>`
           : "";
