@@ -725,14 +725,14 @@ async function loadListings() {
           }
         }
 
-        const quantity = item["Quantity"];
-            const quantityDisplay = quantity && parseInt(quantity) > 1
-              ? `<div class="quantity-info">${quantity} available</div>`
-              : "";
-          
         const quantity = parseInt(item["Quantity"]);
-            const isSoldOut = !isNaN(quantity) && quantity === 0;
-            const soldOutBadge = isSoldOut ? `<span class="badge sold-out">Sold Out</span>` : "";
+        const quantityDisplay = !isNaN(quantity) && quantity > 1
+          ? `<div class="quantity-info">${quantity} available</div>`
+          : "";
+        const isSoldOut = !isNaN(quantity) && quantity === 0;
+        const soldOutBadge = isSoldOut
+          ? `<span class="badge sold-out">Sold Out</span>`
+          : "";
 
         const priceStr = String(item["Price"] ?? "").trim();
         const price = parseFloat(priceStr.replace("£", ""));
