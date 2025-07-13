@@ -234,15 +234,18 @@
     }
 
     .badge.contacted-flag {
-    background-color: #03a9f4;
-    color: white;
-    padding: 3px 8px;
-    border-radius: 4px;
-    font-weight: bold;
-    font-size: 0.9em;
-    display: inline-block;
-    margin-left: 6px;
-  }
+      background-color: #03a9f4;
+      color: white;
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-weight: bold;
+      font-size: 0.9em;
+      display: inline-block;
+      max-width: fit-content;
+      white-space: nowrap;
+      margin-left: 6px;
+    }
+
     @media (max-width: 600px) {
       .background-wrapper {
         padding: 10px;
@@ -738,7 +741,7 @@ async function loadListings() {
     
       filtered.forEach(item => {
           const contacted = item["Contacted"];
-        const contactedBadge = contacted === "Yes"
+          const contactedBadge = contacted === "Yes" && quantity > 0
           ? `<span class="badge contacted-flag">Someone's interested</span>`
           : "";
 
