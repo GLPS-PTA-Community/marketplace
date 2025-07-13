@@ -863,6 +863,32 @@ document.getElementById("toggleFilters").addEventListener("click", () => {
   btn.textContent = isHidden ? "Hide Filters" : "Show Filters";
 });
 </script>
+    
+<!-- Contact Seller Modal -->
+<div id="contactModal" class="modal hidden fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+  <div class="bg-white w-full max-w-md p-6 rounded-lg shadow-lg relative">
+    <button onclick="closeContactModal()" class="absolute top-2 right-2 text-gray-500 hover:text-red-600 text-xl font-bold">&times;</button>
+    <h2 class="text-lg font-semibold mb-4">Contact Seller</h2>
+    <form id="contactForm" class="space-y-4">
+      <input type="hidden" id="modalItemId">
+      <input type="hidden" id="modalItemName">
+      <input type="hidden" id="modalItemPrice">
+      <div>
+        <label for="buyerName" class="block text-sm font-medium">Your Name</label>
+        <input type="text" id="buyerName" required class="w-full border p-2 rounded" />
+      </div>
+      <div>
+        <label for="buyerEmail" class="block text-sm font-medium">Your Email</label>
+        <input type="email" id="buyerEmail" required class="w-full border p-2 rounded" />
+      </div>
+      <div>
+        <label for="buyerMessage" class="block text-sm font-medium">Message</label>
+        <textarea id="buyerMessage" class="w-full border p-2 rounded" rows="4">Hi, I'm interested in this item. Is it still available please?</textarea>
+      </div>
+      <button type="submit" class="w-full bg-orange-500 hover:bg-orange-600 text-white py-2 rounded">Send Message</button>
+    </form>
+  </div>
+</div>
 
 <script>
 function openContactModal(id, name, price) {
@@ -907,31 +933,5 @@ document.getElementById('contactForm').addEventListener('submit', async (e) => {
   }
 });
 </script>
-    
-<!-- Contact Seller Modal -->
-<div id="contactModal" class="modal hidden fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-  <div class="bg-white w-full max-w-md p-6 rounded-lg shadow-lg relative">
-    <button onclick="closeContactModal()" class="absolute top-2 right-2 text-gray-500 hover:text-red-600 text-xl font-bold">&times;</button>
-    <h2 class="text-lg font-semibold mb-4">Contact Seller</h2>
-    <form id="contactForm" class="space-y-4">
-      <input type="hidden" id="modalItemId">
-      <input type="hidden" id="modalItemName">
-      <input type="hidden" id="modalItemPrice">
-      <div>
-        <label for="buyerName" class="block text-sm font-medium">Your Name</label>
-        <input type="text" id="buyerName" required class="w-full border p-2 rounded" />
-      </div>
-      <div>
-        <label for="buyerEmail" class="block text-sm font-medium">Your Email</label>
-        <input type="email" id="buyerEmail" required class="w-full border p-2 rounded" />
-      </div>
-      <div>
-        <label for="buyerMessage" class="block text-sm font-medium">Message</label>
-        <textarea id="buyerMessage" class="w-full border p-2 rounded" rows="4">Hi, I'm interested in this item. Is it still available please?</textarea>
-      </div>
-      <button type="submit" class="w-full bg-orange-500 hover:bg-orange-600 text-white py-2 rounded">Send Message</button>
-    </form>
-  </div>
-</div>
 </body>
 </html>
