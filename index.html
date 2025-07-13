@@ -289,6 +289,17 @@
         padding: 2px 6px;
       }
     }
+
+        .badge.sold-out {
+      background-color: #d32f2f;
+      color: white;
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-weight: bold;
+      font-size: 0.9em;
+      margin-left: 6px;
+    }
+
   
     .primary-button {
       background-color: #8cbb3b;
@@ -718,7 +729,10 @@ async function loadListings() {
             const quantityDisplay = quantity && parseInt(quantity) > 1
               ? `<div class="quantity-info">${quantity} available</div>`
               : "";
-  
+          
+        const quantity = parseInt(item["Quantity"]);
+            const isSoldOut = !isNaN(quantity) && quantity === 0;
+            const soldOutBadge = isSoldOut ? `<span class="badge sold-out">Sold Out</span>` : "";
 
         const priceStr = String(item["Price"] ?? "").trim();
         const price = parseFloat(priceStr.replace("£", ""));
@@ -737,10 +751,10 @@ async function loadListings() {
             `<div style='width:120px;height:90px;background:#ddd;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#666;'>No Image</div>`}
           <div class="item-details">
             <div class="item-title-block">
-              <div class="item-title">
-                ${item["Item Name"]} ${expiringSoonBadge} ${contactedBadge}
-              </div>
-              ${quantityDisplay}
+            <div class="item-title">
+              ${item["Item Name"]} ${expiringSoonBadge} ${contactedBadge} ${soldOutBadge}
+            </div>
+                ${quantityDisplay}
             </div>
 
             <div class="item-description">${item["Item Description"]}</div>
