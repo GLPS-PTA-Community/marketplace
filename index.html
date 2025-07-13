@@ -688,8 +688,6 @@ async function loadListings() {
         const expiryDate = hasExpiryDate ? new Date(item["Expiry Date"]) : null;
         const daysUntilExpiry = expiryDate ? (expiryDate - new Date()) / (1000 * 60 * 60 * 24) : null;
         const matchesExpiringSoon = !expiringSoonOnly || (expiryDate && daysUntilExpiry <= 7 && daysUntilExpiry >= 0);
-        const matchesBranding = !branding || item["Branded?"] === branding;
-        return matchesSearch && matchesCategory && matchesSize && matchesAge && matchesCondition && matchesFree && matchesPriceRange && matchesExpiringSoon && matchesBranding;
         const itemName = item["Item Name"] || "";
         const itemPriceStr = String(item["Price"] ?? "").trim();
         const itemPrice = parseFloat(itemPriceStr.replace("£", ""));
