@@ -655,7 +655,6 @@ async function loadListings() {
     const sizeDropdown = document.getElementById("sizeFilter");
     const ageDropdown = document.getElementById("ageFilter");
     const conditionDropdown = document.getElementById("conditionFilter");
-    const branding = document.getElementById("brandingFilter").value;
 
     const getUnique = key => [...new Set(listings.map(i => i[key]).filter(Boolean))];
 
@@ -676,10 +675,7 @@ async function loadListings() {
       const size = sizeDropdown.value;
       const age = ageDropdown.value;
       const condition = conditionDropdown.value;
-      const matchesBranding =
-      !branding ||
-      (branding === "Branded" && item["Branded?"] === "Yes") ||
-      (branding === "Unbranded" && item["Branded?"] === "No");
+      const branding = brandingDropdown.value;
       const sort = document.getElementById("sortOrder").value;
       const freeOnly = document.getElementById("freeOnlyToggle").checked;
       const expiringSoonOnly = document.getElementById("expiringSoonToggle").checked;
@@ -706,8 +702,13 @@ async function loadListings() {
         const matchesMin = isNaN(minPrice) || (!isNaN(itemPrice) && itemPrice >= minPrice);
         const matchesMax = isNaN(maxPrice) || (!isNaN(itemPrice) && itemPrice <= maxPrice);
         const matchesPriceRange = matchesMin && matchesMax;
+          
+        const matchesBranding =
+        !branding ||
+        (branding === "Branded" && item["Branded?"] === "Yes") ||
+        (branding === "Unbranded" && item["Branded?"] === "No");
 
-        return matchesSearch && matchesCategory && matchesSize && matchesAge && matchesCondition && matchesFree && matchesPriceRange && matchesExpiringSoon;
+        return matchesSearch && matchesCategory && matchesSize && matchesAge && matchesCondition && matchesFree && matchesPriceRange && matchesExpiringSoon && matchesBranding;
       });
 
       filtered.sort((a, b) => {
