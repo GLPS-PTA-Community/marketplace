@@ -581,6 +581,10 @@ select:focus {
 <input id="freeOnlyToggle" type="checkbox"/>
 <label for="freeOnlyToggle">Free only</label>
 </div>
+<div class="checkbox-group">
+<input id="ptaOnlyToggle" type="checkbox"/>
+<label for="ptaOnlyToggle">PTA items only</label>
+</div>
 <button id="resetFilters" type="button">Reset Filters</button></div>
 </div></div>
 <div id="listings">
@@ -682,6 +686,8 @@ async function loadListings() {
       const expiringSoonOnly = document.getElementById("expiringSoonToggle").checked;
       const minPrice = parseFloat((document.getElementById("minPriceFilter").value || "").replace("£", ""));
       const maxPrice = parseFloat((document.getElementById("maxPriceFilter").value || "").replace("£", ""));
+      const ptaOnly = document.getElementById("ptaOnlyToggle").checked;
+
 
       const filtered = listings.filter(item => {
 
@@ -700,6 +706,7 @@ async function loadListings() {
         const matchesFree = !freeOnly || (!isNaN(itemPrice) && itemPrice === 0);
         const matchesMin = isNaN(minPrice) || (!isNaN(itemPrice) && itemPrice >= minPrice);
         const matchesMax = isNaN(maxPrice) || (!isNaN(itemPrice) && itemPrice <= maxPrice);
+        const matchesPTA = !ptaOnly || (item["Item Description"] && item["Item Description"].startsWith("PTA"));
         const matchesPriceRange = matchesMin && matchesMax;
           
         const matchesBranding =
@@ -707,8 +714,8 @@ async function loadListings() {
         (branding === "Branded" && item["Branded?"] === "Yes") ||
         (branding === "Unbranded" && item["Branded?"] === "No");
 
-        return matchesSearch && matchesCategory && matchesSize && matchesAge && matchesCondition && matchesFree && matchesPriceRange && matchesExpiringSoon && matchesBranding;
-      });
+        return matchesSearch && matchesCategory && matchesSize && matchesAge && matchesCondition && matchesFree && matchesPriceRange && matchesExpiringSoon && matchesBranding && matchesPTA;
+     });
 
       filtered.sort((a, b) => {
         const dateA = new Date(a.Timestamp);
@@ -794,6 +801,7 @@ async function loadListings() {
     document.getElementById("maxPriceFilter").addEventListener("change", renderFilteredListings);
     document.getElementById("expiringSoonToggle").addEventListener("change", renderFilteredListings);
     document.getElementById("brandingFilter").addEventListener("change", renderFilteredListings);
+    document.getElementById("ptaOnlyToggle").addEventListener("change", renderFilteredListings);
 
     renderFilteredListings();
 
@@ -809,6 +817,7 @@ async function loadListings() {
       document.getElementById("minPriceFilter").value = "";
       document.getElementById("maxPriceFilter").value = "";
       document.getElementById("expiringSoonToggle").checked = false;
+      document.getElementById("ptaOnlyToggle").checked = false
       renderFilteredListings();
     });
 
