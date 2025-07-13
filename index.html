@@ -655,6 +655,7 @@ async function loadListings() {
     const sizeDropdown = document.getElementById("sizeFilter");
     const ageDropdown = document.getElementById("ageFilter");
     const conditionDropdown = document.getElementById("conditionFilter");
+    const branding = document.getElementById("brandingFilter").value;
 
     const getUnique = key => [...new Set(listings.map(i => i[key]).filter(Boolean))];
 
