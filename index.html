@@ -693,9 +693,7 @@ const endpoint = "https://script.google.com/macros/s/AKfycbwbmYq1D2DLyHSCxBXZmgt
 
 async function loadListings() {
   try {
-    const res = await fetch(endpoint, {
-      method: 'POST'
-    });
+    const res = await fetch(endpoint);
     const data = await res.json();
     const listings = data.filter(item => item["Item Name"]);
 
