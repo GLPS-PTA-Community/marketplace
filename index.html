@@ -968,12 +968,12 @@ document.getElementById('contactForm').addEventListener('submit', async (e) => {
     const modal = document.getElementById('contactModal');
     const closeBtn = document.getElementById('closeModalButton');
 
-  // Safety net to ensure modal is hidden on load
+    // Safety net to ensure modal is hidden on load
     modal?.classList.add('hidden');
 
-  // Wire up the close button
+    // Wire up the close button
     closeBtn?.addEventListener('click', closeContactModal);
- });
+});
 
   function closeContactModal() {
     document.getElementById('contactModal').classList.add('hidden');
