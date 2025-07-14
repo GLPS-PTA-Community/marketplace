@@ -962,6 +962,16 @@ document.getElementById('contactForm').addEventListener('submit', async (e) => {
     alert("⚠️ Something went wrong. Please try again.");
   }
 });
+    </script>
+    <script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const closeBtn = document.getElementById('closeModalButton');
+    closeBtn?.addEventListener('click', closeContactModal);
+  });
+
+  function closeContactModal() {
+    document.getElementById('contactModal').classList.add('hidden');
+  }
 </script>
 </body>
 </html>
