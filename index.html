@@ -536,34 +536,6 @@ select:focus {
   outline: 2px solid #007AFF;
   background-color: #eaeaea;
 }
-
-/* Hide by default */
-.modal.hidden {
-  display: none !important;
-}
-
-/* Fullscreen overlay modal */
-#contactModal {
-  position: fixed;
-  inset: 0;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-color: rgba(0, 0, 0, 0.5);
-  z-index: 9999;
-}
-    
-/* Inner box styling */
-#contactModal .modal-content {
-  background: white;
-  padding: 20px;
-  border-radius: 10px;
-  max-width: 500px;
-  width: 90%;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-  z-index: 10000;
-  position: relative;
-}
 </style>
 </head>
 <body>
@@ -689,7 +661,7 @@ select:focus {
   }
 </script>
 <script>
-const endpoint = "https://script.google.com/macros/s/AKfycbwJ-kFDvg-MSk9wG6UXyVQ5uOWTkFh2wn5WaXnOh-2ubufP0j4Ca7eWLW9XvWPiMV1j/exec";
+const endpoint = "https://script.google.com/macros/s/AKfycby3uB_X3yr3sKGrugo8KTh9_FQezJN28wRhU1lmKYZBY5jj43EOXazsQ_LWrbtEUYPb/exec";
 
 async function loadListings() {
   try {
@@ -827,9 +799,9 @@ async function loadListings() {
             ${item["Age"] ? `<p><strong>Age:</strong> ${item["Age"]}</p>` : ""}
             ${displayPrice ? `<p><strong>Price:</strong> ${displayPrice}</p>` : ""}
           
-            ${!isSoldOut ? `
-              <button class="contact-button" onclick="openContactModal('${item["Item ID"]}', '${item["Item Name"]}', '${displayPrice}')">Contact Seller</button>
-            ` : ""}
+        ${!isSoldOut ? `
+          <a class="contact-button" href="https://docs.google.com/forms/d/e/1FAIpQLSd85mhv1hfjrSu4ZmhQi6TZe4kmfVFhAtxrV14vU3Uk-Wkheg/viewform?usp=pp_url&entry.1181883131=${encodeURIComponent(item["Item ID"])}&entry.1811975642=${encodeURIComponent(item["Item Name"])}&entry.1847581834=${encodeURIComponent(displayPrice)}&entry.1513359632=${encodeURIComponent("Hi, I'm interested in this item. Is it still available please?")}" target="_blank" rel="noopener noreferrer">Contact Seller</a>
+        ` : ""}
         </div>
         `;
         container.appendChild(div);
@@ -890,90 +862,5 @@ document.getElementById("toggleFilters").addEventListener("click", () => {
   panel.style.display = isHidden ? "block" : "none";
   btn.textContent = isHidden ? "Hide Filters" : "Show Filters";
 });
-</script>
-    
-<!-- Contact Seller Modal -->
-<div id="contactModal" class="modal hidden">
-  <div class="modal-content">
-    <button id="closeModalButton" style="position: absolute; top: 10px; right: 15px; background: none; border: none; font-size: 1.5em; cursor: pointer;">×</button>
-    <h2 style="margin-top: 0;">Contact Seller</h2>
-    <form id="contactForm">
-      <input type="hidden" id="modalItemId">
-      <input type="hidden" id="modalItemName">
-      <input type="hidden" id="modalItemPrice">
-      <div>
-        <label for="buyerName">Your Name</label><br>
-        <input type="text" id="buyerName" required style="width: 100%; padding: 10px; margin-bottom: 10px;">
-      </div>
-      <div>
-        <label for="buyerEmail">Your Email</label><br>
-        <input type="email" id="buyerEmail" required style="width: 100%; padding: 10px; margin-bottom: 10px;">
-      </div>
-      <div>
-        <label for="buyerMessage">Message</label><br>
-        <textarea id="buyerMessage" rows="4" style="width: 100%; padding: 10px;">Hi, I'm interested in this item. Is it still available please?</textarea>
-      </div>
-      <button type="submit" style="margin-top: 10px; padding: 10px 20px; background-color: #f57c00; color: white; border: none; border-radius: 5px; cursor: pointer;">
-        Send Message
-      </button>
-    </form>
-  </div>
-</div>
-
-<script>
-  document.addEventListener('DOMContentLoaded', () => {
-    const modal = document.getElementById('contactModal');
-    const closeBtn = document.getElementById('closeModalButton');
-    const form = document.getElementById('contactForm');
-
-    // Hide modal on load
-    modal?.classList.add('hidden');
-
-    // Wire up close button
-    closeBtn?.addEventListener('click', () => {
-      modal.classList.add('hidden');
-    });
-
-    // Wire up form submit
-    form?.addEventListener('submit', async (e) => {
-      e.preventDefault();
-
-      const payload = {
-        itemId: document.getElementById('modalItemId').value,
-        itemName: document.getElementById('modalItemName').value,
-        buyerName: document.getElementById('buyerName').value,
-        buyerEmail: document.getElementById('buyerEmail').value,
-        message: document.getElementById('buyerMessage').value,
-        price: document.getElementById('modalItemPrice').value
-      };
-
-      try {
-        const response = await fetch("https://script.google.com/macros/s/AKfycbwJ-kFDvg-MSk9wG6UXyVQ5uOWTkFh2wn5WaXnOh-2ubufP0j4Ca7eWLW9XvWPiMV1j/exec", {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
-        });
-
-        if (!response.ok) throw new Error('Failed to send');
-
-        alert("✅ Message sent successfully.");
-        form.reset();
-        modal.classList.add('hidden');
-      } catch (err) {
-        console.error(err);
-        alert("⚠️ Could not send message. Try again.");
-      }
-    });
-
-    // Make this globally callable from inline onclicks
-    window.openContactModal = function (id, name, price) {
-      document.getElementById('modalItemId').value = id;
-      document.getElementById('modalItemName').value = name;
-      document.getElementById('modalItemPrice').value = price;
-      document.getElementById('buyerMessage').value = "Hi, I'm interested in this item. Is it still available please?";
-      modal.classList.remove('hidden');
-    };
-  });
-</script>
-</body>
+</script></body>
 </html>
