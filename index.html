@@ -547,6 +547,11 @@ select:focus {
 <div class="subheading">Brought to you by the GLPS PTA</div>
 <div class="tagline">A community space to give, buy, sell and promote the reuse of pre-loved uniform and items</div>
 </div>
+<div style="text-align: center; margin: 20px 0;">
+  <span style="color: red; font-weight: bold; background: #ffeeee; padding: 8px 16px; border-radius: 6px; display: inline-block;">
+    🚧 SANDBOX VERSION — TEST DATA ONLY
+  </span>
+</div>
 <div style="text-align: center; margin-bottom: 20px;">
 <div class="add-button" style="display: inline-block; margin-right: 10px;">
 <a class="primary-button" href="https://docs.google.com/forms/d/e/1FAIpQLSeMm3omCNgUCGx_sx6NMYikU_JO8kWU_5S9fj2G9HG8n8DUUw/viewform" rel="noopener noreferrer" target="_blank">
@@ -661,8 +666,8 @@ select:focus {
   }
 </script>
 <script>
-const endpoint = "https://script.google.com/macros/s/AKfycbyN7T05OIIyid8-pcgTj0DXTDixL_S4FX28L60f0OCiZY_YlznCvLOx0jlYni9sXVTp/exec";
-
+const endpoint = "https://script.google.com/macros/s/AKfycbw1t0SHvbSGcHSc5RPI5SVpb-GKiOgrSo9X8MANTz3Y2zbjh_FrBu8MsgJ-6XNR52eb/exec";
+    
 async function loadListings() {
   try {
     const res = await fetch(endpoint);
@@ -775,7 +780,7 @@ async function loadListings() {
 
         const imageFilename = item["Image Filename"]?.trim();
         const imageUrl = imageFilename
-          ? `https://raw.githubusercontent.com/GLPS-PTA-Community/marketplace/main/images/${encodeURIComponent(imageFilename)}`
+          ? `https://raw.githubusercontent.com/GLPS-PTA-Community/marketplace/sandbox/images/${encodeURIComponent(imageFilename)}`
           : "";
 
         const div = document.createElement("div");
