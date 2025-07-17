@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://raw.githubusercontent.com/GLPS-PTA-Community/marketplace/main/images/pta-logo.png" rel="icon" type="image/png"/>
+<title>Community Marketplace — SANDBOX</title>
+<style>
+    /* Background wrapper to contain main content and apply background */
+    .background-wrapper {
+      background-color: #fdfbee;
+      padding: 20px;
+      min-height: 100vh;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+    }
+
+    .main-wrapper {
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    @keyframes fadeSlideUp {
+      0% {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+      100% { transform: scale(1); }
+    }
+
+    .header-box {
+      background-color: #8cbb3b;
+      color: white;
+      padding: 20px 30px;
+      border-radius: 20px;
+      text-align: center;
+      margin-bottom: 20px;
+      animation: fadeSlideUp 0.8s ease-out forwards;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+    }
+
+    .header-box img {
+      height: 60px;
+      margin-bottom: 10px;
+      animation: pulse 3s infinite;
+    }
+
+    .header-box h1 {
+      margin: 0;
+      font-size: 2em;
+    }
+
+    .header-box .subheading {
+      margin-top: 5px;
+      font-size: 0.85em;
+      color: #f9f9f9;
+      opacity: 0.6;
+      font-weight: normal;
+    }
+
+    .header-box .tagline {
+      margin-top: 10px;
+      font-size: 1em;
+      color: #ffffff;
+      opacity: 0.85;
+      font-style: italic;
+    }
+
+    .add-button {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .controls {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    input, select {
+      padding: 10px;
+      font-size: 16px;
+      margin: 5px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      min-width: 150px;
+      box-sizing: border-box;
+    }
+
+    .item-card, .skeleton-card {
+      background-color: #fff;
+      border-radius: 10px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      margin: 20px auto;
+      padding: 20px;
+      max-width: 600px;
+      display: flex;
+      gap: 15px;
+      box-sizing: border-box;
+    }
+
+    .skeleton-card {
+      animation: pulse 1.5s infinite ease-in-out;
+      background: linear-gradient(90deg, #eee 25%, #f5f5f5 50%, #eee 75%);
+      background-size: 400% 100%;
+    }
+
+    .skeleton-thumbnail {
+      width: 120px;
+      height: 90px;
+      background-color: #ccc;
+      border-radius: 8px;
+    }
+
+    .skeleton-text {
+      flex: 1;
+    }
+
+    .skeleton-line {
+      height: 14px;
+      background-color: #ccc;
+      margin-bottom: 10px;
+      border-radius: 4px;
+    }
+
+    .item-details {
+      flex: 1;
+    }
+
+    .item-title {
+      font-size: 1.5em;
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .item-title-block {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 10px;
+    }
+    
+    .item-description {
+      margin-bottom: 15px;
+      color: #555;
+    }
+
+    .contact-button {
+      display: inline-block;
+      background-color: #4CAF50;
+      color: white;
+      padding: 10px 20px;
+      text-decoration: none;
+      border-radius: 5px;
+      font-weight: bold;
+      transition: background-color 0.3s ease;
+    }
+
+    .contact-button:hover {
+      background-color: #45a049;
+    }
+
+    .thumbnail {
+      width: 120px;
+      height: 90px;
+      object-fit: cover;
+      border-radius: 8px;
+      border: 3px solid #8cbb3b;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    #lightbox {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.8);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+    }
+
+    #lightbox img {
+      max-width: 90%;
+      max-height: 80%;
+      border-radius: 10px;
+      box-shadow: 0 0 15px #000;
+    }
+    
+    .badge.pta-flag {
+      background-color: #4caf50;
+      color: white;
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-weight: bold;
+      font-size: 0.9em;
+      margin-left: 6px;
+    }
+
+    .badge.expiring-soon {
+      background-color: #ff9800;
+      color: white;
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-weight: bold;
+      font-size: 0.9em;
+    }
+
+    .quantity-info {
+      font-size: 0.9em;
+      background-color: #e0f3d1;
+      color: #333;
+      padding: 2px 6px;
+      border-radius: 4px;
+      margin-top: 4px;
+      display: inline-block;
+      align-self: flex-start;
+    }
+
+    .badge.contacted-flag {
+      background-color: #03a9f4;
+      color: white;
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-weight: bold;
+      font-size: 0.9em;
+      display: inline-block;
+      max-width: fit-content;
+      white-space: nowrap;
+      margin-left: 6px;
+    }
+
+    @media (max-width: 600px) {
+      .background-wrapper {
+        padding: 10px;
+      }
+      .main-wrapper {
+        padding: 0 5px;
+      }
+      .header-box {
+        padding: 15px 15px;
+        border-radius: 15px;
+      }
+      .header-box img {
+        height: 45px;
+        margin-bottom: 5px;
+      }
+      .header-box h1 {
+        font-size: clamp(1.5em, 6vw, 2.5em);
+        line-height: 1.2;
+      }
+      .header-box .subheading {
+        font-size: 0.9em;
+      }
+      .header-box .tagline {
+        font-size: 0.95em;
+      }
+      
+      input, select {
+        padding: 8px;
+        font-size: 14px;
+        margin: 3px 2px;
+        min-width: 100px;
+      }
+      .item-card, .skeleton-card {
+        flex-direction: column;
+        max-width: 100%;
+        padding: 15px;
+      }
+      .thumbnail {
+        width: 100%;
+        height: auto;
+        max-height: 180px;
+        border-width: 2px;
+        margin-bottom: 10px;
+      }
+      .item-title {
+        font-size: 1.2em;
+      }
+      .contact-button {
+        padding: 8px 15px;
+        font-size: 0.9em;
+      }
+        
+      .badge.expiring-soon {
+        font-size: 0.8em;
+        padding: 2px 6px;
+      }
+    }
+
+        .badge.sold-out {
+      background-color: #d32f2f;
+      color: white;
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-weight: bold;
+      font-size: 0.9em;
+      margin-left: 6px;
+    }
+
+  
+    .primary-button {
+      background-color: #8cbb3b;
+      color: white;
+      padding: 12px 25px;
+      font-weight: bold;
+      border-radius: 8px;
+      font-size: 1em;
+      display: inline-block;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .primary-button:hover {
+      background-color: #78a932;
+    }
+
+    .primary-button.orange {
+      background-color: #f57c00;
+    }
+
+    .primary-button.orange:hover {
+      background-color: #e06c00;
+    }
+
+
+.free-only-wrapper { display: flex; align-items: center; gap: 0.25rem; margin-top: 0.25rem; }
+
+.free-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  background: #f6f6f6;
+  border: 1px solid #ccc;
+  padding: 0.3rem 0.6rem;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  cursor: pointer;
+}
+.free-toggle input {
+  margin: 0;
+}
+
+
+/* Force free toggle visual grouping */
+.free-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+  background-color: #f0f0f0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.9rem;
+  white-space: nowrap;
+}
+
+.free-toggle input[type="checkbox"] {
+  margin: 0;
+}
+
+
+/* Updated Free Toggle Styling */
+.free-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.2rem 0.5rem;
+  border-radius: 6px;
+  background: #f6f6f6;
+  border: 1px solid #ccc;
+  font-size: 0.9rem;
+  margin-top: 0.25rem;
+}
+
+
+#resetFilters {
+  background-color: #007AFF;
+  color: white;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-left: 10px;
+}
+#resetFilters:hover {
+  background-color: #0066cc;
+}
+
+#toggleFilters {
+  background-color: #eee;
+  border: 1px solid #ccc;
+  padding: 6px 12px;
+  margin-left: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+#toggleFilters:hover {
+  background-color: #ddd;
+}
+
+
+#resetFilters, #toggleFilters {
+  background-color: #007AFF;
+  color: white;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+}
+#resetFilters:hover, #toggleFilters:hover {
+  background-color: #0066cc;
+}
+
+/* Clean up Free Only checkbox */
+#freeOnlyToggle {
+  width: auto;
+  margin-left: 8px;
+  vertical-align: middle;
+}
+label[for="freeOnlyToggle"] {
+  display: inline-block;
+  width: auto;
+  margin-top: 8px;
+  font-weight: 500;
+  vertical-align: middle;
+}
+
+
+/* Match exact orange */
+#resetFilters, #toggleFilters {
+  background-color: #007AFF;
+  color: white;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+}
+#resetFilters:hover, #toggleFilters:hover {
+  background-color: #e07c00;
+}
+
+/* Free Only Checkbox Cleanup */
+.checkbox-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 8px;
+}
+.checkbox-group label {
+  margin: 0;
+  font-weight: 500;
+}
+.checkbox-group input[type="checkbox"] {
+  transform: scale(1.2);
+}
+
+/* Phone layout: Search + Category on same row */
+@media screen and (max-width: 600px) {
+  .controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  #searchInput {
+    flex: 1 1 60%;
+  }
+  #categoryFilter {
+    flex: 1 1 35%;
+  }
+  #toggleFilters {
+    flex: 1 1 100%;
+  }
+}
+
+.checkbox-group {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 6px;
+  margin-left: 10px;
+}
+.checkbox-group input[type="checkbox"] {
+  transform: scale(1.2);
+}
+
+/* Dropdown styling for clarity and accessibility */
+  background-color: #f2f2f2;
+  color: #000;
+  border: 1px solid #ccc;
+  padding: 6px;
+  border-radius: 4px;
+  font-size: 14px;
+}
+  outline: 2px solid #007AFF;
+  background-color: #eaeaea;
+}
+
+/* Dropdown styling with iOS/Safari override */
+
+select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-color: #f2f2f2;
+  color: #000 !important;
+  font-family: system-ui, sans-serif;
+  font-weight: 500;
+  border: 1px solid #ccc;
+  padding: 6px;
+  border-radius: 4px;
+  font-size: 14px;
+}
+select:focus {
+  outline: 2px solid #007AFF;
+  background-color: #eaeaea;
+}
+</style>
+</head>
+<body>
+  <div class="background-wrapper">
+    <div class="main-wrapper">
+      <div class="header-box">
+        <img alt="PTA Logo" src="https://raw.githubusercontent.com/GLPS-PTA-	Community/marketplace/sandbox/images/pta-logo.png" />
+        <h1>Community Marketplace</h1>
+        <div class="subheading">Brought to you by the GLPS PTA</div>
+        <div class="tagline">A community space to give, buy, sell and promote the reuse of pre-loved uniform and items</div>
+        <div style="margin-top: 12px;">
+          <span style="color: red; font-weight: bold; background: #ffeeee; padding: 8px 16px; border-radius: 6px; display: inline-block;">
+            🚧 SANDBOX VERSION — TEST ONLY
+          </span>
+        </div>
+      </div>
+<div style="text-align: center; margin-bottom: 20px;">
+<div class="add-button" style="display: inline-block; margin-right: 10px;">
+<a class="primary-button" href="https://docs.google.com/forms/d/e/1FAIpQLSeMm3omCNgUCGx_sx6NMYikU_JO8kWU_5S9fj2G9HG8n8DUUw/viewform" rel="noopener noreferrer" target="_blank">
+          Add new listing
+        </a>
+</div>
+<div class="about-button" style="display: inline-block;">
+<button class="primary-button orange" onclick="openModal()">About</button>
+</div>
+</div>
+<div class="controls"><input id="searchInput" placeholder="Search by item name..." type="text"/><select aria-label="Filter by category" id="categoryFilter">
+<option value="">All Categories</option>
+</select><div>
+<button id="toggleFilters" type="button">Show Filters</button>
+<div id="collapsibleFilters" style="display:none; margin-top: 10px;">
+<select aria-label="Filter by age" id="ageFilter">
+<option value="">All Ages</option>
+</select>
+<select aria-label="Filter by condition" id="conditionFilter">
+<option value="">All Conditions</option>
+</select>
+<select aria-label="Filter by size" id="sizeFilter">
+<option value="">All Sizes</option>
+</select>
+<select aria-label="Sort order" id="sortOrder">
+<option value="newest">Sort by: Newest</option>
+<option value="oldest">Sort by: Oldest</option>
+</select>
+<select id="minPriceFilter">
+<option value="">Min Price</option><option value="£0.00">£0.00</option><option value="£0.50">£0.50</option><option value="£1.00">£1.00</option><option value="£1.50">£1.50</option><option value="£2.00">£2.00</option><option value="£2.50">£2.50</option><option value="£3.00">£3.00</option><option value="£3.50">£3.50</option><option value="£4.00">£4.00</option><option value="£4.50">£4.50</option><option value="£5.00">£5.00</option><option value="£5.50">£5.50</option><option value="£6.00">£6.00</option><option value="£6.50">£6.50</option><option value="£7.00">£7.00</option><option value="£7.50">£7.50</option><option value="£8.00">£8.00</option><option value="£8.50">£8.50</option><option value="£9.00">£9.00</option><option value="£9.50">£9.50</option><option value="£10.00">£10.00</option>
+</select>
+<select id="maxPriceFilter">
+<option value="">Max Price</option><option value="£0.00">£0.00</option><option value="£0.50">£0.50</option><option value="£1.00">£1.00</option><option value="£1.50">£1.50</option><option value="£2.00">£2.00</option><option value="£2.50">£2.50</option><option value="£3.00">£3.00</option><option value="£3.50">£3.50</option><option value="£4.00">£4.00</option><option value="£4.50">£4.50</option><option value="£5.00">£5.00</option><option value="£5.50">£5.50</option><option value="£6.00">£6.00</option><option value="£6.50">£6.50</option><option value="£7.00">£7.00</option><option value="£7.50">£7.50</option><option value="£8.00">£8.00</option><option value="£8.50">£8.50</option><option value="£9.00">£9.00</option><option value="£9.50">£9.50</option><option value="£10.00">£10.00</option>
+</select>
+<select aria-label="Filter by branding" id="brandingFilter">
+  <option value="">All Types</option>
+  <option value="Branded">Branded</option>
+  <option value="Unbranded">Unbranded</option>
+</select>
+
+<div class="checkbox-group">
+  <input id="expiringSoonToggle" type="checkbox"/>
+  <label for="expiringSoonToggle">Expiring Soon only</label>
+</div>
+<div class="checkbox-group">
+<input id="freeOnlyToggle" type="checkbox"/>
+<label for="freeOnlyToggle">Free only</label>
+</div>
+<div class="checkbox-group">
+<input id="ptaOnlyToggle" type="checkbox"/>
+<label for="ptaOnlyToggle">PTA items only</label>
+</div>
+<button id="resetFilters" type="button">Reset Filters</button></div>
+</div></div>
+<div id="listings">
+<!-- Skeleton loaders -->
+<div class="skeleton-card">
+<div class="skeleton-thumbnail"></div>
+<div class="skeleton-text">
+<div class="skeleton-line" style="width: 60%;"></div>
+<div class="skeleton-line" style="width: 80%;"></div>
+<div class="skeleton-line" style="width: 40%;"></div>
+</div>
+</div>
+<div class="skeleton-card">
+<div class="skeleton-thumbnail"></div>
+<div class="skeleton-text">
+<div class="skeleton-line" style="width: 70%;"></div>
+<div class="skeleton-line" style="width: 90%;"></div>
+<div class="skeleton-line" style="width: 50%;"></div>
+</div>
+</div>
+</div>
+<div id="lightbox" onclick="this.style.display='none'">
+<img alt="Enlarged preview" id="lightbox-img" src=""/>
+</div>
+<div style="margin-top: 40px; text-align: center; font-size: 14px; color: #666;">
+<p>
+<strong>Disclaimer:</strong> The PTA Community Marketplace only facilitates the initial contact between buyers and sellers. All further communication and transactions are the responsibility of the participants. The PTA is not liable for any outcomes resulting from these interactions.
+        </p>
+<p>
+          If you have any questions, please contact us at <a href="mailto:PTA@greatlinfordprimaryschool.co.uk"> PTA@greatlinfordprimaryschool.co.uk</a>.
+        </p>
+</div>
+<footer>
+<div style="text-align: center; margin-top: 40px; font-size: 0.9em; color: #666;">
+        This marketplace is managed by the Great Linford Primary School PTA. 2025
+      </div>
+</footer>
+</div>
+</div>
+<div class="modal-overlay" id="aboutModal" onclick="closeModal(event)" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.6); display: none; justify-content: center; align-items: center; z-index: 1000;">
+<div class="modal-content" onclick="event.stopPropagation()" style="background-color: #fdfbee; padding: 20px; max-width: 600px; width: 90%; border-radius: 10px; position: relative; max-height: 90vh; overflow-y: auto;">
+<button class="close-modal" onclick="closeModal()" style="position: absolute; top: 10px; right: 15px; background: none; border: none; font-size: 1.5em; cursor: pointer; color: #333;">×</button>
+<h2>About the Community Marketplace</h2>
+<p>The Community Marketplace is a platform run by the GLPS PTA to help families give away, sell, or buy school-related items such as uniforms, books, toys, and sports equipment.</p>
+<p>Seller email addresses are only shared when a buyer submits a contact request. After that, it's up to the seller to respond and handle all communication. The PTA does not get involved in any contact beyond that point.</p>
+<p>We do not participate in, manage, or profit from any financial transactions. All responsibility for communication and exchanges lies with the individuals involved.</p>
+<p>Listings remain live for 30 days. A reminder will be sent 7 days before expiry to renew the listing. If not renewed or marked as sold, the listing will be removed, and any associated images will be permanently deleted. It is the seller’s responsibility to mark items as sold in a timely manner.</p>
+<p>Please use the site respectfully, and feel free to share your feedback at: <a href="mailto:pta@greatlinfordprimaryschool.co.uk">pta@greatlinfordprimaryschool.co.uk</a></p>
+<p>— GLPS PTA Team</p>
+</div>
+</div>
+<script>
+  function openModal() {
+    document.getElementById("aboutModal").style.display = "flex";
+    document.body.style.overflow = "hidden";
+  }
+  function closeModal(event) {
+    document.getElementById("aboutModal").style.display = "none";
+    document.body.style.overflow = "";
+  }
+</script>
+<script>
+const endpoint = "https://script.google.com/macros/s/AKfycbw1t0SHvbSGcHSc5RPI5SVpb-GKiOgrSo9X8MANTz3Y2zbjh_FrBu8MsgJ-6XNR52eb/exec";
+
+async function loadListings() {
+  try {
+    const res = await fetch(endpoint);
+    const data = await res.json();
+    const listings = data.filter(item => item["Item Name"]);
+
+    const categoryDropdown = document.getElementById("categoryFilter");
+    const sizeDropdown = document.getElementById("sizeFilter");
+    const ageDropdown = document.getElementById("ageFilter");
+    const conditionDropdown = document.getElementById("conditionFilter");
+
+    const getUnique = key => [...new Set(listings.map(i => i[key]).filter(Boolean))];
+
+    const populateDropdown = (dropdown, values, label) => {
+      dropdown.innerHTML = `<option value="">All ${label}</option>` +
+        values.map(v => `<option value="${v}">${v}</option>`).join('');
+    };
+
+    populateDropdown(categoryDropdown, getUnique("Category"), "Categories");
+    populateDropdown(sizeDropdown, getUnique("Size"), "Sizes");
+    populateDropdown(ageDropdown, getUnique("Age"), "Ages");
+    populateDropdown(conditionDropdown, getUnique("Condition"), "Conditions");
+
+    const renderFilteredListings = () => {
+      const container = document.getElementById("listings");
+      const search = document.getElementById("searchInput").value.toLowerCase();
+      const category = categoryDropdown.value;
+      const size = sizeDropdown.value;
+      const age = ageDropdown.value;
+      const condition = conditionDropdown.value;
+      const brandingDropdown = document.getElementById("brandingFilter");
+      const branding = brandingDropdown.value;
+      const sort = document.getElementById("sortOrder").value;
+      const freeOnly = document.getElementById("freeOnlyToggle").checked;
+      const expiringSoonOnly = document.getElementById("expiringSoonToggle").checked;
+      const minPrice = parseFloat((document.getElementById("minPriceFilter").value || "").replace("£", ""));
+      const maxPrice = parseFloat((document.getElementById("maxPriceFilter").value || "").replace("£", ""));
+      const ptaOnly = document.getElementById("ptaOnlyToggle").checked;
+
+
+      const filtered = listings.filter(item => {
+
+        const hasExpiryDate = !!item["Expiry Date"];
+        const expiryDate = hasExpiryDate ? new Date(item["Expiry Date"]) : null;
+        const daysUntilExpiry = expiryDate ? (expiryDate - new Date()) / (1000 * 60 * 60 * 24) : null;
+        const matchesExpiringSoon = !expiringSoonOnly || (expiryDate && daysUntilExpiry <= 7 && daysUntilExpiry >= 0);
+        const itemName = item["Item Name"] || "";
+        const itemPriceStr = String(item["Price"] ?? "").trim();
+        const itemPrice = parseFloat(itemPriceStr.replace("£", ""));
+        const matchesSearch = itemName.toLowerCase().includes(search);
+        const matchesCategory = !category || item["Category"] === category;
+        const matchesSize = !size || item["Size"] === size;
+        const matchesAge = !age || item["Age"] === age;
+        const matchesCondition = !condition || item["Condition"] === condition;
+        const matchesFree = !freeOnly || (!isNaN(itemPrice) && itemPrice === 0);
+        const matchesMin = isNaN(minPrice) || (!isNaN(itemPrice) && itemPrice >= minPrice);
+        const matchesMax = isNaN(maxPrice) || (!isNaN(itemPrice) && itemPrice <= maxPrice);
+        const matchesPTA = !ptaOnly || (item["Item Description"] && item["Item Description"].startsWith("PTA"));
+        const matchesPriceRange = matchesMin && matchesMax;
+          
+        const matchesBranding =
+        !branding ||
+        (branding === "Branded" && item["Branded?"] === "Yes") ||
+        (branding === "Unbranded" && item["Branded?"] === "No");
+
+        return matchesSearch && matchesCategory && matchesSize && matchesAge && matchesCondition && matchesFree && matchesPriceRange && matchesExpiringSoon && matchesBranding && matchesPTA;
+     });
+
+      filtered.sort((a, b) => {
+        const dateA = new Date(a.Timestamp);
+        const dateB = new Date(b.Timestamp);
+        return sort === "oldest" ? dateA - dateB : dateB - dateA;
+      });
+
+      container.innerHTML = "";
+    
+      filtered.forEach(item => {
+        const quantity = parseInt(item["Quantity"]);
+        const isSoldOut = !isNaN(quantity) && quantity === 0;
+        const contacted = item["Contacted"];
+        const contactedBadge = contacted === "Yes" && quantity > 0
+        ? `<span class="badge contacted-flag">Someone's interested</span>`
+        : "";
+
+        const isPTA = item["Item Description"] && item["Item Description"].startsWith("PTA");
+        const ptaBadge = isPTA ? `<span class="badge pta-flag">PTA</span>` : "";
+
+        let expiringSoonBadge = "";
+        if (item["Expiry Date"]) {
+          const expiryDate = new Date(item["Expiry Date"]);
+          const now = new Date();
+          const timeDiff = expiryDate - now;
+          const daysUntilExpiry = timeDiff / (1000 * 60 * 60 * 24);
+          if (daysUntilExpiry <= 7 && daysUntilExpiry >= 0) {
+            expiringSoonBadge = `<span class="badge expiring-soon">Expiring Soon</span>`;
+          }
+        }
+
+        const quantityDisplay = !isNaN(quantity) && quantity > 1
+          ? `<div class="quantity-info">${quantity} available</div>`
+          : "";
+          
+        const soldOutBadge = isSoldOut
+          ? `<span class="badge sold-out">Sold Out</span>`
+          : "";
+
+        const priceStr = String(item["Price"] ?? "").trim();
+        const price = parseFloat(priceStr.replace("£", ""));
+        const displayPrice = !isNaN(price) ? `£${price.toFixed(2)}` : "";
+
+        const imageFilename = item["Image Filename"]?.trim();
+        const imageUrl = imageFilename
+          ? `https://raw.githubusercontent.com/GLPS-PTA-Community/marketplace/sandbox/images/${encodeURIComponent(imageFilename)}`
+          : "";
+
+        const div = document.createElement("div");
+        div.className = "item-card";
+
+        div.innerHTML = `
+          ${imageUrl ? `<img class="thumbnail" src="${imageUrl}" alt="Item image" onclick="showLightbox('${imageUrl}')"/>` :
+            `<div style='width:120px;height:90px;background:#ddd;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#666;'>No Image</div>`}
+          <div class="item-details">
+            <div class="item-title-block">
+            <div class="item-title">
+            ${item["Item Name"]} ${ptaBadge} ${expiringSoonBadge} ${contactedBadge} ${soldOutBadge}
+            </div>
+                ${quantityDisplay}
+            </div>
+
+            <div class="item-description">${item["Item Description"]}</div>
+            <p><strong>Category:</strong> ${item["Category"]}</p>
+            <p><strong>Condition:</strong> ${item["Condition"]}</p>
+            ${item["Size"] ? `<p><strong>Size:</strong> ${item["Size"]}</p>` : ""}
+            ${item["Age"] ? `<p><strong>Age:</strong> ${item["Age"]}</p>` : ""}
+            ${displayPrice ? `<p><strong>Price:</strong> ${displayPrice}</p>` : ""}
+          
+        ${!isSoldOut ? `
+          <a class="contact-button" href="https://docs.google.com/forms/d/e/1FAIpQLSd85mhv1hfjrSu4ZmhQi6TZe4kmfVFhAtxrV14vU3Uk-Wkheg/viewform?usp=pp_url&entry.1181883131=${encodeURIComponent(item["Item ID"])}&entry.1811975642=${encodeURIComponent(item["Item Name"])}&entry.1847581834=${encodeURIComponent(displayPrice)}&entry.1513359632=${encodeURIComponent("Hi, I'm interested in this item. Is it still available please?")}" target="_blank" rel="noopener noreferrer">Contact Seller</a>
+        ` : ""}
+        </div>
+        `;
+        container.appendChild(div);
+      });
+    };
+
+    document.getElementById("searchInput").addEventListener("input", renderFilteredListings);
+    categoryDropdown.addEventListener("change", renderFilteredListings);
+    sizeDropdown.addEventListener("change", renderFilteredListings);
+    ageDropdown.addEventListener("change", renderFilteredListings);
+    conditionDropdown.addEventListener("change", renderFilteredListings);
+    document.getElementById("sortOrder").addEventListener("change", renderFilteredListings);
+    document.getElementById("freeOnlyToggle").addEventListener("change", renderFilteredListings);
+    document.getElementById("minPriceFilter").addEventListener("change", renderFilteredListings);
+    document.getElementById("maxPriceFilter").addEventListener("change", renderFilteredListings);
+    document.getElementById("expiringSoonToggle").addEventListener("change", renderFilteredListings);
+    document.getElementById("brandingFilter").addEventListener("change", renderFilteredListings);
+    document.getElementById("ptaOnlyToggle").addEventListener("change", renderFilteredListings);
+
+    renderFilteredListings();
+
+    document.getElementById("resetFilters").addEventListener("click", () => {
+      document.getElementById("searchInput").value = "";
+      document.getElementById("categoryFilter").value = "";
+      document.getElementById("ageFilter").value = "";
+      document.getElementById("sizeFilter").value = "";
+      document.getElementById("conditionFilter").value = "";
+      document.getElementById("sortOrder").value = "newest";
+      document.getElementById("brandingFilter").value = "";
+      document.getElementById("freeOnlyToggle").checked = false;
+      document.getElementById("minPriceFilter").value = "";
+      document.getElementById("maxPriceFilter").value = "";
+      document.getElementById("expiringSoonToggle").checked = false;
+      document.getElementById("ptaOnlyToggle").checked = false
+      renderFilteredListings();
+    });
+
+  } catch (e) {
+    console.error("Error loading listings", e);
+    document.getElementById("listings").innerHTML = "<p>Error loading listings.</p>";
+  }
+}
+
+function showLightbox(imgUrl) {
+  const lightbox = document.getElementById("lightbox");
+  const lightboxImg = document.getElementById("lightbox-img");
+  lightboxImg.src = imgUrl;
+  lightbox.style.display = "flex";
+}
+
+loadListings();
+
+
+document.getElementById("toggleFilters").addEventListener("click", () => {
+  const panel = document.getElementById("collapsibleFilters");
+  const btn = document.getElementById("toggleFilters");
+  const isHidden = panel.style.display === "none";
+  panel.style.display = isHidden ? "block" : "none";
+  btn.textContent = isHidden ? "Hide Filters" : "Show Filters";
+});
+</script></body>
+</html>
