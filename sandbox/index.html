@@ -686,9 +686,14 @@ async function loadListings() {
         values.map(v => `<option value="${v}">${v}</option>`).join('');
     };
 
+    const sortAges = (a, b) => {
+    const getStart = str => parseInt(str.match(/\d+/)?.[0] ?? 0);
+    return getStart(a) - getStart(b);
+    };
+
     populateDropdown(categoryDropdown, getUnique("Category"), "Categories");
     populateDropdown(sizeDropdown, getUnique("Size"), "Sizes");
-    populateDropdown(ageDropdown, getUnique("Age"), "Ages");
+    populateDropdown(ageDropdown, getUnique("Age").sort(sortAges), "Ages");
     populateDropdown(conditionDropdown, getUnique("Condition"), "Conditions");
 
     const renderFilteredListings = () => {
