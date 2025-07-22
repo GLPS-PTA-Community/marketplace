@@ -628,17 +628,31 @@ select:focus {
 <div id="lightbox" onclick="this.style.display='none'">
 <img alt="Enlarged preview" id="lightbox-img" src=""/>
 </div>
-<div id="contactModal" class="modal" style="display:none; position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.6); z-index:1000; justify-content: center; align-items: center;">
-  <div class="modal-content" style="background: white; padding: 20px; border-radius: 10px; max-width: 400px; width: 90%; position: relative;">
+<!-- Modal Overlay (click-outside-to-close wrapper) -->
+<div id="modalOverlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1000; justify-content:center; align-items:center;" onclick="closeContactModal()">
+  
+  <!-- Actual Modal Content -->
+  <div id="contactModal" style="background:white; padding:20px; border-radius:10px; max-width:400px; width:90%; position:relative;" onclick="event.stopPropagation()">
+
     <button onclick="closeContactModal()" style="position:absolute; top:10px; right:15px; background:none; border:none; font-size:1.5em; cursor:pointer;">×</button>
+    
     <h2>Contact Seller</h2>
     <p id="modalItemName"></p>
     <p id="modalPrice"></p>
+
     <form id="contactForm">
       <input type="text" name="buyerName" placeholder="Your Name" required style="width:100%; margin-bottom:10px;" />
       <input type="email" name="buyerEmail" placeholder="Your Email" required style="width:100%; margin-bottom:10px;" />
       <textarea name="message" placeholder="Your Message" required style="width:100%; margin-bottom:10px;"></textarea>
       <button type="submit" style="width:100%; background:#4CAF50; color:white; padding:10px; border:none; border-radius:5px;">Send Message</button>
+    </form>
+
+    <div id="submissionSuccess" style="display:none; margin-top:10px; color: green; font-weight: bold;">
+      Thanks for your request — your message has been sent to the seller.
+    </div>
+  </div>
+</div>
+
     </form>
   </div>
 </div>
@@ -911,7 +925,8 @@ function openContactModal(button) {
 }
 
 function closeContactModal() {
-  document.getElementById("contactModal").style.display = "none";
+  document.getElementById("modalOverlay").style.display = "none"; // Updated ID
+  document.getElementById("submissionSuccess").style.display = "none";
   document.body.style.overflow = "";
 }
 
@@ -919,6 +934,12 @@ document.getElementById("contactForm").addEventListener("submit", async function
   e.preventDefault();
 
   const form = e.target;
+  const submitButton = form.querySelector("button[type='submit']");
+  const successMessage = document.getElementById("submissionSuccess");
+
+  submitButton.disabled = true;
+  submitButton.textContent = "Sending...";
+
   const formData = new FormData(form);
 
   const payload = {
@@ -933,17 +954,24 @@ document.getElementById("contactForm").addEventListener("submit", async function
   try {
     await fetch(endpoint, {
       method: "POST",
-      mode: "no-cors", // Avoids CORS preflight check
-      body: JSON.stringify(payload),
+      mode: "no-cors",
+      body: JSON.stringify(payload)
     });
 
-
-    alert("Message sent! The seller will be in touch.");
-    closeContactModal();
+    successMessage.style.display = "block";
     form.reset();
+    closeContactModal();
+
+    setTimeout(() => {
+      successMessage.style.display = "none";
+    }, 5000);
+
   } catch (err) {
-    alert("Error sending message.");
-    console.error(err);
+    console.error("Error submitting contact form:", err);
+    alert("Something went wrong. Please try again.");
+  } finally {
+    submitButton.disabled = false;
+    submitButton.textContent = "Send Message";
   }
 });
 </script></body>
