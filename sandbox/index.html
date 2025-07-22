@@ -906,6 +906,7 @@ function openContactModal(button) {
   document.getElementById("modalItemName").textContent = `Item: ${currentItem.itemName}`;
   document.getElementById("modalPrice").textContent = `Price: ${currentItem.price}`;
   document.getElementById("contactModal").style.display = "flex";
+  document.querySelector("#contactForm textarea[name='message']").value = `Hi, I'm interested in this item. Is it still available please?`;
   document.body.style.overflow = "hidden";
 }
 
@@ -930,11 +931,12 @@ document.getElementById("contactForm").addEventListener("submit", async function
   };
 
   try {
-    const response = await fetch(endpoint, {
+    await fetch(endpoint, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
+      mode: "no-cors", // Avoids CORS preflight check
       body: JSON.stringify(payload),
     });
+
 
     alert("Message sent! The seller will be in touch.");
     closeContactModal();
