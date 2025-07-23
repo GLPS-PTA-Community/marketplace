@@ -632,7 +632,7 @@ select:focus {
 <div id="modalOverlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1000; justify-content:center; align-items:center;" onclick="closeContactModal()">
   
   <!-- Actual Modal Content -->
-  <div id="contactModal" style="background:white; padding:20px; border-radius:10px; max-width:400px; width:90%; position:relative;" onclick="event.stopPropagation()">
+  <div id="contactModal" style="background:#fdfbee; padding:20px; border-radius:10px; max-width:400px; width:90%; position:relative;" onclick="event.stopPropagation()">
 
     <button onclick="closeContactModal()" style="position:absolute; top:10px; right:15px; background:none; border:none; font-size:1.5em; cursor:pointer;">×</button>
     
@@ -643,7 +643,7 @@ select:focus {
     <form id="contactForm">
       <input type="text" name="buyerName" placeholder="Your Name" required style="width:100%; margin-bottom:10px;" />
       <input type="email" name="buyerEmail" placeholder="Your Email" required style="width:100%; margin-bottom:10px;" />
-      <textarea name="message" placeholder="Your Message" required style="width:100%; margin-bottom:10px;"></textarea>
+      <textarea name="message" placeholder="Your Message" required style="width:100%; margin-bottom:10px; resize: vertical; max-height: 150px; overflow: auto;"></textarea>
       <button type="submit" style="width:100%; background:#4CAF50; color:white; padding:10px; border:none; border-radius:5px;">Send Message</button>
     </form>
 
