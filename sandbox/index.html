@@ -979,5 +979,35 @@ document.getElementById("contactForm").addEventListener("submit", async function
   submitButton.textContent = "Send Message";
 }
 });
+</script>
+<!-- ✅ Ecosia / DuckDuckGo browser warning -->
+<script>
+  window.addEventListener("load", function () {
+    const ua = navigator.userAgent.toLowerCase();
+    const isPrivateBrowser =
+      ua.includes("ecosia") ||
+      ua.includes("duckduckgo") ||
+      ua.includes("brave") ||
+      ua.includes("vivaldi");
+
+    if (isPrivateBrowser) {
+      const notice = document.createElement("div");
+      notice.style = `
+        background: #fff3cd;
+        color: #856404;
+        border: 1px solid #ffeeba;
+        padding: 12px;
+        border-radius: 6px;
+        margin: 20px;
+        font-size: 0.95em;
+      `;
+      notice.innerHTML = `
+        <strong>Heads up!</strong> We've noticed you're using a privacy-focused browser.
+        If the site doesn't load correctly or seems unreachable, try opening it in
+        <strong>Chrome</strong> or <strong>Safari</strong> for the smoothest experience.
+      `;
+      document.body.prepend(notice);
+    }
+  });
 </script></body>
 </html>
