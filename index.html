@@ -623,6 +623,34 @@ select:focus {
 <div id="lightbox" onclick="this.style.display='none'">
 <img alt="Enlarged preview" id="lightbox-img" src=""/>
 </div>
+<!-- Modal Overlay (click-outside-to-close wrapper) -->
+<div id="modalOverlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1000; justify-content:center; align-items:center;" onclick="closeContactModal()">
+  
+  <!-- Actual Modal Content -->
+  <div id="contactModal" style="background:#fdfbee; padding:20px; border-radius:10px; max-width:400px; width:90%; position:relative;" onclick="event.stopPropagation()">
+
+    <button onclick="closeContactModal()" style="position:absolute; top:10px; right:15px; background:none; border:none; font-size:1.5em; cursor:pointer;">×</button>
+    
+    <h2>Contact Seller</h2>
+    <p id="modalItemName"></p>
+    <p id="modalPrice"></p>
+
+    <p style="font-size: 0.9em; color: #444; margin-bottom: 12px;">
+      When you submit this form, your name and email will be shared with the seller so they can contact you directly.
+    </p>
+      
+    <form id="contactForm">
+      <input type="text" name="buyerName" placeholder="Your Name" required style="width:100%; margin-bottom:10px;" />
+      <input type="email" name="buyerEmail" placeholder="Your Email" required style="width:100%; margin-bottom:10px;" />
+      <textarea name="message" placeholder="Your Message" required style="width:100%; margin-bottom:10px; resize: vertical; max-height: 150px; overflow: auto;"></textarea>
+      <button type="submit" style="width:100%; background:#4CAF50; color:white; padding:10px; border:none; border-radius:5px;">Send Message</button>
+    </form>
+
+    <div id="submissionSuccess" style="display:none; margin-top:10px; color: green; font-weight: bold;">
+      Thanks for your request — your message has been sent to the seller.
+    </div>
+  </div>
+</div>    
 <div style="margin-top: 40px; text-align: center; font-size: 14px; color: #666;">
 <p>
 <strong>Disclaimer:</strong> The PTA Community Marketplace only facilitates the initial contact between buyers and sellers. All further communication and transactions are the responsibility of the participants. The PTA is not liable for any outcomes resulting from these interactions.
@@ -804,14 +832,22 @@ async function loadListings() {
             ${item["Age"] ? `<p><strong>Age:</strong> ${item["Age"]}</p>` : ""}
             ${displayPrice ? `<p><strong>Price:</strong> ${displayPrice}</p>` : ""}
           
-        ${!isSoldOut ? `
-          <a class="contact-button" href="https://docs.google.com/forms/d/e/1FAIpQLSd85mhv1hfjrSu4ZmhQi6TZe4kmfVFhAtxrV14vU3Uk-Wkheg/viewform?usp=pp_url&entry.1181883131=${encodeURIComponent(item["Item ID"])}&entry.1811975642=${encodeURIComponent(item["Item Name"])}&entry.1847581834=${encodeURIComponent(displayPrice)}&entry.1513359632=${encodeURIComponent("Hi, I'm interested in this item. Is it still available please?")}" target="_blank" rel="noopener noreferrer">Contact Seller</a>
-        ` : ""}
-        </div>
-        `;
-        container.appendChild(div);
-      });
-    };
+            ${!isSoldOut ? `
+                  <button 
+                    class="contact-button"
+                    onclick="openContactModal(this)"
+                    data-item-id="${item["Item ID"]}"
+                    data-item-name="${item["Item Name"]}"
+                    data-price="${displayPrice}"
+                  >
+                    Contact Seller
+                  </button>
+                ` : ""}
+                </div>
+                `;
+                container.appendChild(div);
+          });
+        };
 
     document.getElementById("searchInput").addEventListener("input", renderFilteredListings);
     categoryDropdown.addEventListener("change", renderFilteredListings);
@@ -866,6 +902,82 @@ document.getElementById("toggleFilters").addEventListener("click", () => {
   const isHidden = panel.style.display === "none";
   panel.style.display = isHidden ? "block" : "none";
   btn.textContent = isHidden ? "Hide Filters" : "Show Filters";
+});
+// 👇 Paste your modal logic here
+let currentItem = {};
+
+function getScrollbarWidth() {
+  return window.innerWidth - document.documentElement.clientWidth;
+}
+
+function openContactModal(button) {
+  currentItem = {
+    itemId: button.dataset.itemId,
+    itemName: button.dataset.itemName,
+    price: button.dataset.price
+  };
+
+  document.getElementById("modalItemName").textContent = `Item: ${currentItem.itemName}`;
+  document.getElementById("modalPrice").textContent = `Price: ${currentItem.price}`;
+  document.querySelector("#contactForm textarea[name='message']").value = `Hi, I'm interested in this item. Is it still available please?`;
+
+  const scrollBarWidth = getScrollbarWidth();
+  document.body.style.overflow = "hidden";
+  document.body.style.paddingRight = `${scrollBarWidth}px`;
+
+  document.getElementById("modalOverlay").style.display = "flex";
+}
+
+function closeContactModal() {
+  document.getElementById("modalOverlay").style.display = "none";
+  document.getElementById("submissionSuccess").style.display = "none";
+  document.body.style.overflow = "";
+  document.body.style.paddingRight = "";
+}
+
+document.getElementById("contactForm").addEventListener("submit", async function (e) {
+  e.preventDefault();
+
+  const form = e.target;
+  const submitButton = form.querySelector("button[type='submit']");
+  const successMessage = document.getElementById("submissionSuccess");
+
+  submitButton.disabled = true;
+  submitButton.textContent = "Sending...";
+
+  const formData = new FormData(form);
+
+  const payload = {
+    itemId: currentItem.itemId,
+    itemName: currentItem.itemName,
+    price: currentItem.price,
+    buyerName: formData.get("buyerName"),
+    buyerEmail: formData.get("buyerEmail"),
+    message: formData.get("message")
+  };
+
+  try {
+    await fetch(endpoint, {
+      method: "POST",
+      mode: "no-cors",
+      body: JSON.stringify(payload)
+    });
+
+    successMessage.style.display = "block";
+    form.reset();
+    closeContactModal();
+
+    setTimeout(() => {
+      successMessage.style.display = "none";
+    }, 5000);
+
+  } catch (err) {
+    console.error("Error submitting contact form:", err);
+    alert("Something went wrong. Please try again.");
+  } finally {
+    submitButton.disabled = false;
+    submitButton.textContent = "Send Message";
+  }
 });
 </script></body>
 </html>
