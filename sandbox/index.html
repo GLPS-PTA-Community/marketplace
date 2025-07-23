@@ -919,7 +919,7 @@ function openContactModal(button) {
 
   document.getElementById("modalItemName").textContent = `Item: ${currentItem.itemName}`;
   document.getElementById("modalPrice").textContent = `Price: ${currentItem.price}`;
-  document.getElementById("contactModal").style.display = "flex";
+  document.getElementById("modalOverlay").style.display = "flex";
   document.querySelector("#contactForm textarea[name='message']").value = `Hi, I'm interested in this item. Is it still available please?`;
   document.body.style.overflow = "hidden";
 }
